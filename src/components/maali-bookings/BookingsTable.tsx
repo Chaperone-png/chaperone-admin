@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
-import { Table, Button, Space, Tag } from 'antd';
+import { Table, Button, Space, Tag, Tabs } from 'antd';
 import { EditOutlined, DeleteOutlined, EyeOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import AssignMaaliModal from './AssignMaaliModal';
+import ViewMaaliBooking from './ViewMaaliBooking';
+import { MaaliBookingPlanTypesData, orderTabTypes } from '../../utils/constants';
 
 interface Booking {
     id: string;
+    _id: string;
     userId: string;
     planType: string;
     startTime: Date;
@@ -29,16 +32,15 @@ interface BookingTableProps {
         onChange: (page: number, pageSize?: number) => void;
     };
     loading: boolean;
+    setCurrentTab: (value: string) => void;
+    currentTab: string;
 }
 
-const BookingTable: React.FC<BookingTableProps> = ({ data, onShowDetails, onEdit, onDelete, pagination, loading }) => {
+const BookingTable: React.FC<BookingTableProps> = ({ data, onShowDetails, onEdit, onDelete, pagination, loading, setCurrentTab, currentTab }) => {
     const [assignMaali, setAssignMaali] = useState(false);
+    const [viewMaaliId, setViewMaaliId] = useState('');
+
     const columns = [
-        // {
-        //     title: 'User ID',
-        //     key: 'userId',
-        //     render: (text: Date, record:any) => <span>{record.userId?._id}</span>,
-        // },
         {
             title: 'Customer Name',
             key: 'customerName',
@@ -61,7 +63,6 @@ const BookingTable: React.FC<BookingTableProps> = ({ data, onShowDetails, onEdit
             key: 'date',
             render: (text: Date, record: any) => moment(record.date).format('DD-MM-YYYY'),
         },
-
         {
             title: 'Plan Type',
             dataIndex: 'planType',
@@ -82,34 +83,13 @@ const BookingTable: React.FC<BookingTableProps> = ({ data, onShowDetails, onEdit
             key: 'no_of_months',
             render: (text: any, record: any) => <span>{record.bookingDetails[record.planType]?.no_of_months || '-'}</span>,
         },
-
         {
             title: 'Pincode',
             key: 'customerAddress',
             render: (text: Date, record: any) => {
-                const {
-                    state,
-                    city,
-                    pincode,
-                    mobileNumber,
-                    houseNo,
-                    area,
-                    landmark,
-                    default: isDefaultAddress
-                } = record.addressId;
-
-                const addressParts = [
-                    houseNo,
-                    area,
-                    landmark,
-                    city,
-                    state,
-                    pincode
-                ].filter(Boolean); // Filter out any empty or undefined values
-
+                const { pincode, isDefaultAddress } = record.addressId || {};
                 return (
                     <span>
-                        {/* {addressParts.join(', ')} */}
                         {pincode}
                         {isDefaultAddress && <strong> (Default Address)</strong>}
                     </span>
@@ -119,9 +99,15 @@ const BookingTable: React.FC<BookingTableProps> = ({ data, onShowDetails, onEdit
         {
             title: 'Maali Name',
             key: 'maaliName',
-            render: (text: Date, record: any) => <>
-                {record?.maaliId ? <span>{record.maaliId?.firstName} {record.maaliId?.lastName}</span> : <span className='error'>Not Allocated</span>}
-            </>,
+            render: (text: Date, record: any) => (
+                <>
+                    {record?.maaliId ? (
+                        <span>{record.maaliId?.firstName} {record.maaliId?.lastName}</span>
+                    ) : (
+                        <span className='error'>Not Allocated</span>
+                    )}
+                </>
+            ),
         },
         {
             title: 'Status',
@@ -171,7 +157,7 @@ const BookingTable: React.FC<BookingTableProps> = ({ data, onShowDetails, onEdit
                     </Button>
                     <Button
                         icon={<EyeOutlined />}
-                        onClick={() => window.location.href = `/booking/${record.id}`}
+                        onClick={() => setViewMaaliId(record._id)}
                     >
                         View
                     </Button>
@@ -179,9 +165,22 @@ const BookingTable: React.FC<BookingTableProps> = ({ data, onShowDetails, onEdit
             ),
         },
     ];
+    const onTabChange = (key: string) => {
+        setCurrentTab(key);
+    };
 
     return (
         <>
+            <Tabs activeKey={currentTab} onChange={onTabChange}>
+                {MaaliBookingPlanTypesData?.map((tab: any, index: number) => {
+                    return <Tabs.TabPane
+                        id={tab.value}
+                        tab={<span className="tab-completed">{tab.title}</span>}
+                        key={tab.value}
+                    />
+                })}
+            </Tabs>
+
             <Table
                 columns={columns}
                 dataSource={data}
@@ -189,9 +188,21 @@ const BookingTable: React.FC<BookingTableProps> = ({ data, onShowDetails, onEdit
                 pagination={pagination}
                 loading={loading}
             />
-            {assignMaali && <AssignMaaliModal isOpen={!!assignMaali} bookingDetails={assignMaali} onCancel={() => {
-                setAssignMaali(false)
-            }} />}
+            {assignMaali && (
+                <AssignMaaliModal
+                    isOpen={!!assignMaali}
+                    bookingDetails={assignMaali}
+                    onCancel={() => setAssignMaali(false)}
+                />
+            )}
+            {/* Render ViewMaaliBooking outside of the columns */}
+            {viewMaaliId && (
+                <ViewMaaliBooking
+                    isOpen={!!viewMaaliId}
+                    bookingDetails={data.find((booking) => booking?._id === viewMaaliId)}
+                    onCancel={() => setViewMaaliId('')}
+                />
+            )}
         </>
     );
 };

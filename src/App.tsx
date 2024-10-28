@@ -43,7 +43,7 @@ const AppRoutes: React.FC = () => (
     <Route path="/orders/:type" element={<ProtectedRoute><Orders /></ProtectedRoute>} />
     <Route path="/customers" element={<ProtectedRoute><Customers /></ProtectedRoute>} />
     <Route path="/categories" element={<ProtectedRoute><Categories /></ProtectedRoute>} />
-    <Route path="/maali-bookings" element={<ProtectedRoute><MaaliBookings /></ProtectedRoute>} />
+    <Route path="/maali-bookings/:type" element={<ProtectedRoute><MaaliBookings /></ProtectedRoute>} />
     <Route path="/services" element={<ProtectedRoute><Services /></ProtectedRoute>} />
     <Route path="/master-data/products" element={<ProtectedRoute><ProductMasterData /></ProtectedRoute>} />
     <Route path="/master-data/plants" element={<ProtectedRoute><PlantsMasterData /></ProtectedRoute>} />

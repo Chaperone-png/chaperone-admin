@@ -92,7 +92,7 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, onCollapse }) => {
       key: '1.2',
       title: 'Maali Bookings',
       icon: <ShopOutlined />,
-      path: '/maali-bookings',
+      path: '/maali-bookings/all',
     },
     {
       key: '7',

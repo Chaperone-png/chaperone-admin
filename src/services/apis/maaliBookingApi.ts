@@ -1,6 +1,6 @@
 import { adminAxiosInstance } from "../axiosInstance";
 
-const getMaaliBookings = async (page = 1, pageSize = 10, searchQuery = '', statusQuery = '') => {
+const getMaaliBookings = async (page = 1, pageSize = 10, searchQuery = '', statusQuery = '', currentTab?: string) => {
   try {
       const response = await adminAxiosInstance.get('/all-bookings/', {
           params: {
@@ -8,6 +8,7 @@ const getMaaliBookings = async (page = 1, pageSize = 10, searchQuery = '', statu
               pageSize,
               search: searchQuery,
               status: statusQuery,
+              currentTab
           },
       });
       return response?.data || [];

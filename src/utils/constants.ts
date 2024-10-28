@@ -152,6 +152,33 @@ export const orderStatusTypesData = {
     },
 };
 
+export const MaaliBookingPlanTypesData = [
+    {
+        id:0,
+        title: 'All',
+        color: 'yellow',
+        value: 'all',
+    },
+    {
+        id:1,
+        title: 'One Time',
+        color: 'yellow',
+        value: 'one_time',
+    },
+    {
+        id:2,
+        title: 'Weekly',
+        color: 'blue',
+        value: 'weekly',
+    },
+    {
+        id:3,
+        title: 'Monthly',
+        color: 'blue',
+        value: 'monthly',
+    },
+];
+
 export type OrderStatusKeys = keyof typeof orderStatusTypesData;
 
 export const statusColorConstants: Record<string, string> = {
@@ -186,15 +213,10 @@ export const dashboardCategories: Category[] = [
     {
       title: 'Maali Statistics',
       widgets: [
-        { title: 'Subscriptions', firstCount: 10, secondCount: 20, secondCountPrefix: 'Rs.', secondCountSuffix: 'K', secondCountType: 'success', link: '' },
-        { title: 'Active Subscriptions', firstCount: 8, secondCount: 15, secondCountPrefix: 'Rs.', secondCountSuffix: 'K', secondCountType: 'success', link: '' },
-        { title: 'Cancelled Subscriptions', firstCount: 8, secondCount: 15, secondCountPrefix: 'Rs.', secondCountSuffix: 'K', secondCountType: 'success', link: '' },
-  
-        { title: 'Total One-time Bookings', firstCount: 8, secondCount: 15, secondCountPrefix: 'Rs.', secondCountSuffix: 'K', secondCountType: 'success', link: '' },
-        { title: 'Pending One-time Bookings', firstCount: 8, secondCount: 15, secondCountPrefix: 'Rs.', secondCountSuffix: 'K', secondCountType: 'success', link: '' },
-        { title: 'Completed One-time Bookings', firstCount: 8, secondCount: 15, secondCountPrefix: 'Rs.', secondCountSuffix: 'K', secondCountType: 'success', link: '' },
-        { title: 'Cancelled One-time Bookings', firstCount: 8, secondCount: 15, secondCountPrefix: 'Rs.', secondCountSuffix: 'K', secondCountType: 'success', link: '' },
-  
+        { title: 'Subscriptions', firstCount: 10, secondCount: 20, secondCountPrefix: 'Rs.', secondCountSuffix: 'K', secondCountType: 'success', link: '/maali-bookings/all' },
+        { title: 'One Time Subscriptions', firstCount: 8, secondCount: 15, secondCountPrefix: 'Rs.', secondCountSuffix: 'K', secondCountType: 'success', link: '/maali-bookings/one_time' },
+        { title: 'Weekly Subscriptions', firstCount: 8, secondCount: 15, secondCountPrefix: 'Rs.', secondCountSuffix: 'K', secondCountType: 'success', link: '/maali-bookings/weekly' },
+        { title: 'Monthly Subscriptions', firstCount: 8, secondCount: 15, secondCountPrefix: 'Rs.', secondCountSuffix: 'K', secondCountType: 'success', link: '/maali-bookings/monthly' },
         // Add more widgets related to Maali
       ],
       path:'/services/maali'

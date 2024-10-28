@@ -3,10 +3,12 @@ import React, { useEffect, useState } from 'react';
 import BookingTable from '../components/maali-bookings/BookingsTable';
 import { maaliBookingApi } from '../services/apis/maaliBookingApi';
 import CustomPageHeader from '../components/PageHeader';
+import { useParams } from 'react-router-dom';
 
 const { Option } = Select;
 
 const MaaliBookings: React.FC = () => {
+    const { type } = useParams<{ type: string }>();
     const [bookings, setBookings] = useState<any[]>([]);
     const [pageSize, setPageSize] = useState(10);
     const [currentPage, setCurrentPage] = useState(1);
@@ -14,11 +16,11 @@ const MaaliBookings: React.FC = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [searchQuery, setSearchQuery] = useState<string>('');
     const [statusFilter, setStatusFilter] = useState<string>('');
-
-    const fetchBookings = async (page: number = 1, pageSize: number = 10, searchQuery: string = '', statusQuery: string = '') => {
+    const [currentTab, setCurrentTab] = useState<string>("all");
+    const fetchBookings = async (page: number = 1, pageSize: number = 10, searchQuery: string = '', statusQuery: string = '', currentTab?: string) => {
         try {
             setIsLoading(true);
-            const response = await maaliBookingApi.getMaaliBookings(page, pageSize, searchQuery, statusQuery);
+            const response = await maaliBookingApi.getMaaliBookings(page, pageSize, searchQuery, statusQuery, currentTab);
             console.log(response)
             if (response.data) {
                 setBookings(response.data);
@@ -33,8 +35,14 @@ const MaaliBookings: React.FC = () => {
     };
 
     useEffect(() => {
-        fetchBookings();
-    }, []);
+        fetchBookings(currentPage, pageSize, searchQuery, statusFilter , currentTab);
+    }, [currentTab]);
+
+    useEffect(() => {
+        if (type) {
+            setCurrentTab(type);
+        }
+    },[type]);
 
     const handlePageChange = (page: number, pageSize?: number) => {
         setCurrentPage(page);
@@ -87,6 +95,8 @@ const MaaliBookings: React.FC = () => {
                         onChange: handlePageChange,
                     }}
                     loading={isLoading}
+                    setCurrentTab={setCurrentTab}
+                    currentTab={currentTab}
                 />
             )}
         </div>
