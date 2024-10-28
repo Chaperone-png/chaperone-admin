@@ -3,7 +3,7 @@ import axios, { AxiosError, AxiosResponse } from "axios";
 import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 
-const baseURL = "https://chaperoneserverco.com/api";
+const baseURL = "https://chaperoneserverco.com/api/";
 // const baseURL = "http://localhost:5000/api";
 
 const createAxiosInstance = (basePath: string) => {
