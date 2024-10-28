@@ -1,0 +1,59 @@
+.blog-editor-container {
+    background-color: #f9f9f9;
+    padding: 24px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.editor-header {
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 24px;
+    font-weight: 500;
+}
+
+.input-field {
+    width: 100%;
+    border-radius: 6px;
+    padding: 8px;
+    font-size: 14px;
+}
+
+.ant-form-item {
+    margin-bottom: 16px;
+}
+
+.quill-editor {
+    .ql-container {
+        height: 300px;
+        background-color: #fff;
+        border-radius: 8px;
+        padding: 16px;
+    }
+
+    .ql-toolbar {
+        background-color: #f1f1f1;
+        border-radius: 8px 8px 0 0;
+    }
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+
+    .submit-btn {
+        background-color: #1890ff;
+        border-color: #1890ff;
+        padding: 10px 24px;
+        font-size: 16px;
+        border-radius: 4px;
+
+        &:hover {
+            background-color: #40a9ff;
+            border-color: #40a9ff;
+        }
+    }
+}

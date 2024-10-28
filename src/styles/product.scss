@@ -1,0 +1,24 @@
+.right-side-btn{
+ position: relative;
+ button{
+    position: absolute;
+    right: 0;
+    top: 8px;
+    z-index: 9;
+ }
+}
+.ant-table-wrapper{
+.ant-table-container{
+table{
+    thead{
+        th{
+            padding: 10px 16px ; 
+        }
+    }
+    tbody{
+        td{
+            padding: 5px 16px ;
+        }
+    }
+}
+}}

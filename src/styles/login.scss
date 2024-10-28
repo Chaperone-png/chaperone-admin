@@ -1,0 +1,55 @@
+/* src/styles/Login.scss */
+.login-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    position: absolute;
+    width: 100%;
+    left: 0;
+    top: 0;
+    .login-wrapper{
+      background-color:  #fff;
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      padding: 20px 20px 5px; 
+      min-width: 360px;
+      h2{
+        font-size: 1.5rem;
+        text-align: center;
+        margin-bottom: 1em;
+        strong{ font-weight: 700;}
+      }
+      .login-button{
+        width: 100%;
+        background-color: #52c41a;
+        border-color: #52c41a;
+        height: auto;
+        padding: 10px;
+      }
+      .ant-input-affix-wrapper {
+        padding: 0;
+        border: 1px solid #8d8080;
+        border-radius: 6px;
+        position: relative;
+        .ant-input-suffix{
+          position: absolute;
+          right: 10px;
+          top: 50%;
+          transform: translate(0, -50%);
+        }
+      }
+      .ant-input{
+        padding: 10px;
+        border-radius: 6px;
+      }
+    }
+  }
+  
+  .login-title {
+    color: green !important; /* Green color */
+  }
+  
+  
+  

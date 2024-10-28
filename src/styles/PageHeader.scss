@@ -1,0 +1,19 @@
+.page-header {
+    background-color: white;
+    color: green;
+    // color: white;
+    padding: 8px ; /* Adjust padding as needed */
+    font-size: 24px;
+    font-weight: bold;
+    // text-align: center;
+    margin: 0; /* Remove margin */
+    margin-bottom: 8px;
+    margin-top: 8px;
+    // display: ruby-text !important;
+  }
+  @media (max-width: 768px) {
+    .page-header {
+      text-align: center;
+    }
+
+  }

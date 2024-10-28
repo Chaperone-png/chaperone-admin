@@ -1,0 +1,68 @@
+.product-master-data {
+  .add-new-btn {
+    margin-top: 5px;
+    margin-bottom: 5px;
+  }
+  .ant-table{
+    border-radius: 8px;
+    margin-top: 5px;
+  }
+  .ant-table-cell {
+    padding: 8px !important;
+  }
+
+  /* Style for the Add Category button */
+  .add-category-btn {
+    margin-left: 16px;
+  }
+
+  .responsive-table {
+    overflow-x: auto;
+  }
+
+  /* Styles for small screens */
+  @media screen and (max-width: 768px) {
+    .responsive-table {
+      font-size: 14px;
+      /* Adjust font size for smaller screens */
+      padding: 8px;
+      /* Adjust padding for smaller screens */
+    }
+  }
+
+  /* Styles for medium screens */
+  @media screen and (min-width: 769px) and (max-width: 1024px) {
+    .responsive-table {
+      font-size: 16px;
+      /* Adjust font size for medium screens */
+      padding: 12px;
+      /* Adjust padding for medium screens */
+    }
+  }
+
+  /* Styles for large screens */
+  @media screen and (min-width: 1025px) {
+    .responsive-table {
+      font-size: 18px;
+      /* Adjust font size for large screens */
+      padding: 16px;
+      /* Adjust padding for large screens */
+    }
+  }
+
+  .product-master-data .add-new-btn {
+    margin-bottom: 16px;
+  }
+
+  .table-responsive {
+    overflow-x: auto;
+  }
+
+  @media (max-width: 768px) {
+    .product-master-data .add-new-btn {
+      width: 100%;
+      margin-bottom: 8px;
+    }
+  }
+
+}

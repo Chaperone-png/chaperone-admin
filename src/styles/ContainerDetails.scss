@@ -1,0 +1,50 @@
+.container-details-form {
+    .ant-form-item-label { 
+      text-align: left; // Align labels to the right
+    }
+  
+    .ant-form-item {
+      display: flex;
+      align-items: center;
+  
+      .ant-form-item-control {
+        flex-grow: 1;
+      }
+    }
+  
+    .bag-details-item,
+    .pot-details-item,
+    .pot-type-details-item,
+    .color-details-item {
+      margin-bottom: 16px;
+    }
+  }
+  
+.field-list-wrapper{
+    padding: 10px ;
+    margin-bottom: 20px; 
+    text-align: left;
+    background-color: aliceblue;
+    h3{
+      font-size: 1.4rem;
+    }
+  .field-listing{
+    @media (min-width: 1200px) {
+    .color-field-list{ 
+      .ant-col-xs-24 {      
+       flex: 0 0 20%;
+       max-width: 20%;}
+      }
+    }
+    .ant-form-item{ 
+      margin: 0 0  12px;
+      .ant-form-item-row{
+        display: inline-block;
+        width: 100%;
+        .ant-input-number{
+          width: 100%;
+        }
+      }
+    }
+  }
+}

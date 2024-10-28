@@ -1,0 +1,60 @@
+.order-details-modal {
+    .modal-content {
+      padding: 20px;
+      
+      .user-details {
+        margin-bottom: 20px;
+        
+        p {
+          margin: 5px 0;
+        }
+      }
+      
+      .order-items {
+        margin-bottom: 20px;
+  
+        .item-details {
+          display: flex;
+          align-items: center;
+          margin-bottom: 10px;
+          
+          .item-image {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            margin-right: 15px;
+          }
+          
+          .item-info {
+            p {
+              margin: 5px 0;
+            }
+            
+            .original-price {
+              text-decoration: line-through;
+              color: red;
+              margin-right: 5px;
+            }
+            
+            .discounted-price {
+              color: green;
+              margin-right: 5px;
+            }
+            
+            .offer-percentage {
+              color: green;
+            }
+          }
+        }
+      }
+  
+      .delivery-partner {
+        margin-top: 20px;
+  
+        p {
+          margin: 5px 0;
+        }
+      }
+    }
+  }
+  

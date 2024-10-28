@@ -1,0 +1,73 @@
+.add-plant-stepper {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center align the entire stepper */
+  background-color: #fff;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  padding-left: 10px;
+  padding-right: 10px;
+
+  .steps {
+    margin-bottom: 20px;
+    max-width: 600px; /* Set a maximum width for the Steps component */
+    width: 100%; /* Ensure the Steps component takes full width within its container */
+    text-align: center; /* Center align the steps */
+    @media (max-width: 575px) {
+      text-align: left;
+    }
+  }
+
+  .step-content {
+    padding: 20px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    text-align: center; /* Center align the content */
+    width: 100%;
+
+    .related-content {
+      margin-bottom: 10px;
+
+      p {
+        margin: 10px 0; /* Increase margin for better spacing */
+      }
+    }
+
+    .or-text {
+      font-weight: bold;
+      margin: 10px 0;
+    }
+
+    .ant-select {
+      width: 100%;
+      max-width: 300px; /* Set a maximum width for the select field */
+      margin-right: 10px; /* Add margin to create space between select and button */
+    }
+
+    .ant-btn-primary {
+      width: 100%;
+      max-width: 300px; /* Set a maximum width for the button */
+    }
+
+    .ant-btn-secondary {
+      width: 100%;
+      max-width: 300px; /* Set a maximum width for the button */
+    }
+
+    .step-buttons {
+      display: flex;
+      justify-content: space-between; /* Distribute space evenly between buttons */
+      margin-top: 20px;
+
+      @media (min-width: 768px) {
+        .ant-select {
+          max-width: calc(50% - 5px); /* Set a maximum width for the select field on larger screens */
+        }
+
+        .ant-btn-primary {
+          max-width: calc(50% - 5px); /* Set a maximum width for the button on larger screens */
+        }
+      }
+    }
+  }
+}

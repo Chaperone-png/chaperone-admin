@@ -1,0 +1,39 @@
+/* MasterData.scss */
+
+.master-data-container {
+    padding: 24px;
+    // background-color: #fff;
+  }
+  
+  .ant-tabs-nav {
+    margin-bottom: 16px;
+  }
+  
+  .ant-tabs-tab {
+    font-size: 16px;
+    font-weight: bold;
+  }
+  
+  .ant-tabs-tabpane {
+    padding: 16px;
+    border: 1px solid #e8e8e8;
+    border-radius: 4px;
+  }
+  
+  /* Custom styles for specific tabs */
+  .plants-tab {
+    /* Add styles for the Plants tab */
+  }
+  
+  .maali-tab {
+    /* Add styles for the Maali tab */
+  }
+  
+  .rental-plants-tab {
+    /* Add styles for the Rental Plants tab */
+  }
+  
+  .plant-day-care-tab {
+    /* Add styles for the Plant Day Care tab */
+  }
+  

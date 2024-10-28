@@ -1,0 +1,62 @@
+// src/App.scss
+.site-layout .site-layout-background {
+  background: #fff;
+}
+.site-layout{
+  position: relative;
+}
+.sidebar-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 64px;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.website-name {
+  color: white;
+  font-size: 1.2em;
+  margin: 0;
+  padding: 0 10px;
+}
+
+.logo {
+  height: 32px;
+  margin: 16px;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+
+ //loader scss file
+ .loader-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+  z-index: 9999; /* Ensures it's on top */
+}
+
+.loader-spinner {
+  border: 8px solid rgba(0, 0, 0, 0.1); /* Light grey border */
+  border-top: 8px solid blue;         /* Blue spinner top */
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  animation: spin 1s linear infinite;   /* Rotating animation */
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.action-buttons{
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}

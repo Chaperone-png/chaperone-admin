@@ -1,0 +1,46 @@
+.orders-container {
+
+  h1 {
+    margin-bottom: 20px;
+    color: #333;
+  }
+
+
+  .ant-table-row {
+    height: 8%; // Row height
+  }
+
+  .scrollable-row {
+    max-height: 120px;
+    overflow-y: auto;
+    padding-right: 10px;
+  }
+
+  .deliveryStatusAction {
+    display: flex;
+    align-items: center;
+
+    .editButton {
+      padding: 0 6px;
+      height: 23px;
+
+    }
+  }
+
+  .item-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    justify-content: space-between;
+
+    .item-image {
+      width: 40px;
+      height: 40px;
+      margin-right: 10px;
+    }
+  }
+
+  .ant-btn-link {
+    color: #1890ff;
+  }
+}

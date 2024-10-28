@@ -1,0 +1,122 @@
+/* src/styles/AddPlantModal.scss */
+.add-product-fields{
+  background-color: #fff;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  padding-left: 10px;
+  padding-right: 10px;
+  margin-bottom: 10px;
+  border-radius: 10px;
+}
+.add-plant-modal {
+  top: 10px;
+
+  .ant-modal-content {
+    max-width: 900px;
+    /* Set a wider max-width for the modal */
+  }
+
+  .ant-modal-body {
+    //   padding: 24px;
+  }
+
+  .add-plant-form {
+    overflow: hidden;
+    .ant-row {
+      display: flex;
+      flex-wrap: wrap;
+
+      .ant-col {
+        margin-bottom: 0 !important;
+        flex: 1;
+        padding-right: 12px;
+
+        .ant-form-item-label {
+          padding: 0 !important;
+        }
+
+        &:last-child {
+          padding-right: 0;
+        }
+
+        @media (max-width: 768px) {
+          flex: 100%;
+          padding-right: 0;
+        }
+      }
+
+      .ant-col:nth-child(odd) {
+        padding-right: 12px;
+
+        @media (max-width: 768px) {
+          padding-right: 0;
+        }
+      }
+    }
+
+    .ant-form-item {
+      margin-bottom: 12px;
+      /* Adjust margin bottom for better spacing between fields */
+    }
+
+    .ant-row .ant-col {
+      flex: 1 1 100%;
+      /* Allow fields to take up full width */
+    }
+
+    .ant-form-item-label {
+      width: 100%;
+      /* Ensure full width for form item labels */
+    }
+
+    .ant-input,
+    .ant-select {
+      width: 100%;
+      /* Make input and select fields full width */
+    }
+
+    .ant-btn {
+      width: 100%;
+      /* Make the submit button full width */
+    }
+  }
+
+  .size-card {
+    margin-top: 10px;
+
+    .ant-card-head {
+      padding: 0 8px;
+      min-height: 10px;
+      background-color: gray;
+      color: #fff;
+    }
+
+    .ant-card-body {
+      padding: 10px;
+    }
+  }
+
+  &.modal-open {
+    body {
+      overflow: hidden;
+    }
+  }
+
+  .custom-tooltip .ant-tooltip-inner {
+    background-color: white !important;
+    color: green !important;
+  }
+}
+.size-collapse  {
+  width: 100% !important;
+  // display: flex;
+  // justify-content: space-between;
+  // align-items: center;
+}
+
+///////////////////
+/// 
+/// 
+.color-form-item {
+  margin-bottom: -20px;
+}

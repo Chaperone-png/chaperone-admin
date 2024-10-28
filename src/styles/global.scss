@@ -1,0 +1,377 @@
+@import './widget.scss';
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Liberation Sans', sans-serif;
+  background-color: #f0f2f5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+
+.ant-menu-item-selected,
+.ant-menu-item-active,
+.ant-btn-primary {
+  background-color: green !important;
+}
+
+.dashboard .date-filter {
+  margin-bottom: 8px;
+}
+
+/* Add this CSS to your stylesheets or styles file */
+
+@media (min-width: 576px) {
+  .custom-modal {
+    width: 80% !important;
+    /* Set modal width to 80% of the screen on small devices (sm and above) */
+  }
+}
+
+@media (min-width: 768px) {
+  .custom-modal {
+    width: 70% !important;
+    /* Set modal width to 70% of the screen on medium devices (md and above) */
+  }
+}
+
+@media (min-width: 992px) {
+  .custom-modal {
+    width: 60% !important;
+    /* Set modal width to 60% of the screen on large devices (lg and above) */
+  }
+}
+
+@media (min-width: 1200px) {
+  .custom-modal {
+    width: 50% !important;
+    /* Set modal width to 50% of the screen on extra-large devices (xl and above) */
+  }
+}
+
+.custom-modal .ant-modal-content {
+  padding: 16px;
+  /* Add padding to the modal content */
+}
+
+.custom-modal .ant-modal-body {
+  max-height: calc(100vh - 180px);
+  /* Set max height for the modal content */
+  overflow-y: auto;
+  /* Enable vertical scrolling */
+  padding: 16px;
+  /* Add padding to create space between scroll and form */
+}
+
+.custom-modal .ant-modal-body::-webkit-scrollbar-thumb {
+  background-color: #1890ff;
+  /* Change scroll bar color */
+  border-radius: 4px;
+  /* Round scroll bar corners */
+}
+
+.custom-modal .ant-modal-body {
+  max-height: calc(100vh - 180px);
+  /* Set max height for the modal content */
+  overflow-y: auto;
+  /* Enable vertical scrolling */
+  padding: 16px;
+  /* Add padding to create space between scroll and form */
+
+  /* Custom scrollbar styles */
+  scrollbar-width: thin;
+  scrollbar-color: green transparent;
+}
+
+/* Customize scrollbar in WebKit browsers */
+.custom-modal .ant-modal-body::-webkit-scrollbar {
+  width: 6px;
+  /* Set the width of the scrollbar */
+}
+
+.custom-modal .ant-modal-body::-webkit-scrollbar-thumb {
+  background-color: green;
+  /* Set the color of the scrollbar thumb */
+  border-radius: 3px;
+  /* Rounded corners for the scrollbar thumb */
+}
+
+.custom-modal .ant-modal-body::-webkit-scrollbar-track {
+  background-color: transparent;
+  /* Set the color of the scrollbar track */
+}
+
+
+/////////
+/// // global styles
+.no-scroll {
+  overflow: hidden;
+}
+
+// Global styles
+// Global styles
+.no-scroll {
+  overflow: hidden;
+}
+
+.menu-button {
+  display: none;
+}
+
+.drawer {
+  display: none;
+}
+
+// Sidebar and drawer visibility control
+@media (max-width: 768px) {
+  .sidebar {
+    display: none;
+  }
+
+  .menu-button {
+    display: block;
+    position: fixed;
+    top: 16px;
+    left: 16px;
+    z-index: 1000;
+  }
+
+  .drawer {
+    display: block;
+  }
+}
+
+.site-layout {
+  margin-left: 0 !important; // Ensure content does not shift when sidebar is collapsed
+  padding-left: 50px; // Add padding to start the content below the MenuOutlined icon
+}
+
+@media (min-width: 769px) {
+  .menu-button {
+    display: none;
+  }
+
+  .drawer {
+    display: none;
+  }
+
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    z-index: 100;
+    width: 200px; // Adjust width as needed
+    background-color: #001529; // Adjust background color as needed
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); // Add box shadow for style
+    transition: width 0.3s ease; // Add smooth transition for width change
+  }
+
+}
+
+.collapsed.sidebar {
+  width: 80px; // Width when collapsed
+}
+
+.collapsed.sidebar+.site-layout {
+  padding-left: 90px; // Width when collapsed
+}
+
+.site-layout {
+  margin-left: 0 !important; // Ensure content does not shift when sidebar is collapsed
+  padding-left: 200px; // Add padding equal to the sidebar width
+  transition: padding-left 0.3s ease; // Add transition for smooth change
+
+  @media (max-width: 768px) {
+    padding-left: 0; // No padding for smaller screens
+  }
+}
+
+.anticon-delete {
+  color: red !important;
+}
+
+.ant-form-item-label {
+  font-weight: 500;
+}
+
+.select-no-data {
+  text-align: center;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+///////////////////////
+::placeholder {
+  color: #8d8080 !important;
+  /* Your desired placeholder color */
+  opacity: 1 !important;
+  /* Ensures the color is fully applied */
+}
+
+:-ms-input-placeholder {
+  color: #8d8080 !important;
+  /* Internet Explorer 10-11 */
+}
+
+::-ms-input-placeholder {
+  color: #8d8080 !important;
+  /* Microsoft Edge */
+}
+
+.ant-select-selection-placeholder {
+  color: #8d8080 !important;
+  /* Your desired placeholder color */
+  opacity: 1 !important;
+  /* Ensures the color is fully applied */
+}
+
+/* Global input and select styles */
+input,
+select {
+  border-color: #8d8080;
+  /* Your desired border color */
+}
+
+input:focus,
+select:focus {
+  border-color: #8d8080;
+  /* Ensures border color on focus */
+  box-shadow: 0 0 0 2px rgba(81, 79, 79, 0.2);
+  /* Optional: Add shadow on focus */
+}
+
+/* Ant Design input and select styles */
+.ant-input {
+  border-color: #8d8080 !important;
+  /* Your desired border color */
+}
+
+.ant-input:focus {
+  border-color: #8d8080 !important;
+  /* Ensures border color on focus */
+  box-shadow: 0 0 0 2px rgba(81, 79, 79, 0.2);
+  /* Optional: Add shadow on focus */
+}
+
+.ant-select-selector {
+  border-color: #8d8080 !important;
+  /* Your desired border color */
+}
+
+.ant-select-focused .ant-select-selector {
+  border-color: #8d8080 !important;
+  /* Ensures border color on focus */
+  box-shadow: 0 0 0 2px rgba(81, 79, 79, 0.2);
+  /* Optional: Add shadow on focus */
+}
+
+///////////////////////////////////
+.ant-form {
+
+  .ant-input,
+  .ant-select-selector,
+  // .ant-checkbox,
+  // .ant-radio,
+  .ant-input-number-input,
+  .ant-picker-input>input {
+    font-size: 16px !important;
+    /* Adjust the font size as per your preference */
+    height: 40px !important;
+    /* Adjust the height as per your preference */
+  }
+
+  .ant-select-selector {
+    overflow-y: auto;
+    /* Add a vertical scrollbar when content overflows */
+  }
+
+  .ant-table {
+    overflow-x: auto !important;
+  }
+}
+
+///////////////////////////////////
+
+.ant-table {
+  .ant-table-content {
+    overflow: auto;
+
+  }
+}
+
+///////////////////////////////////
+
+.ant-modal {
+  .ant-modal-content {
+    padding: 0;
+
+    .ant-modal-header {
+      padding: 16px 20px;
+      background-color: #F0FFE5;
+    }
+
+    .ant-modal-footer {
+      padding: 12px;
+    }
+
+    .ant-modal-body {
+      padding: 12px;
+    }
+  }
+}
+/* Scrollbar width */
+::-webkit-scrollbar {
+  width: 5px;
+  /* Width of the scrollbar */
+}
+
+/* Track (part of the scrollbar not covered by the thumb) */
+::-webkit-scrollbar-track {
+  background: #f1f1f1 !important;
+  /* Color of the track */
+}
+
+/* Handle (part of the scrollbar that moves) */
+::-webkit-scrollbar-thumb {
+  background: green !important;
+  /* Color of the handle */
+  border-radius: 10px;
+  /* Roundness of the handle */
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: green !important;
+  /* Color of the handle on hover */
+}
+
+/* Scrollbar width */
+::-webkit-scrollbar {
+  width: 5px;
+  /* Width of the scrollbar */
+}
+
+/* Track (part of the scrollbar not covered by the thumb) */
+::-webkit-scrollbar-track {
+  background: #f1f1f1 !important;
+  /* Color of the track */
+}
+
+/* Handle (part of the scrollbar that moves) */
+::-webkit-scrollbar-thumb {
+  background: green !important;
+  /* Color of the handle */
+  border-radius: 10px;
+  /* Roundness of the handle */
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: green !important;
+  /* Color of the handle on hover */
+}

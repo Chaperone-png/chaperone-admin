@@ -1,0 +1,66 @@
+
+.orders-container {
+    // padding: 20px;
+    // background-color: #1c2b4a; 
+    // border-radius: 8px;
+    // color: #f0f0f0;
+    // color: #f0f0f0;
+
+    .ant-table {
+        .ant-table-thead>tr>th {
+            border-bottom: 1px solid #1a2947;
+            color: black;
+        }
+
+        .ant-table-tbody>tr>td {
+            color: black;
+        }
+
+        .ant-btn-primary {
+            background-color: #3b5998;
+            border-color: #3b5998;
+        }
+
+        .ant-btn-primary:hover {
+            background-color: #5c7cc3;
+            border-color: #5c7cc3;
+        }
+    }
+
+    .query-title {
+        color: red;
+        /* Highlight query title in red */
+    }
+
+    .email-form {
+        .form-item {
+            margin-bottom: 16px;
+
+            label {
+                display: block;
+                color: #f0f0f0;
+                margin-bottom: 8px;
+            }
+
+            input,
+            .ant-input,
+            .ant-input-textarea {
+                width: 100%;
+                padding: 8px;
+                background-color: #223a61;
+                border: 1px solid #3b5998;
+                color: #f0f0f0;
+
+                &:focus {
+                    border-color: #5c7cc3;
+                }
+            }
+        }
+    }
+
+    .ant-tag-green {
+        background-color: #52c41a;
+        border-color: #52c41a;
+        color: white;
+    }
+}

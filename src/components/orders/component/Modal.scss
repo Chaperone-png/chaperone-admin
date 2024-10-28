@@ -1,0 +1,73 @@
+.order-details-modal,
+.edit-status-modal {
+  .ant-modal-header {
+    background-color: #001529; // Dark blue header
+    color: #fff;
+  }
+
+  .modal-Button-Group {
+    text-align: right;
+
+    .save-btn {
+      margin-left: 10px;
+    }
+  }
+
+  .ant-modal-body {
+    padding: 20px;
+  }
+
+  .ant-modal-footer {
+    display: none;
+  }
+
+  .order-description {
+    .item-row {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+
+      .item-image {
+        width: 40px;
+        height: 40px;
+        margin-right: 10px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+      }
+
+      span {
+        font-size: 14px;
+      }
+    }
+
+    .ant-descriptions-item-label {
+      background-color: #f0f2f5;
+      font-weight: bold;
+    }
+  }
+
+  .edit-status-modal {
+    color: black;
+    font-weight: bold;
+
+    .ant-select {
+      margin-top: 10px;
+      margin-bottom: 20px;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+
+      .save-btn {
+        background-color: #52c41a;
+        border-color: #52c41a;
+        margin-right: 10px;
+      }
+
+      .cancel-btn {
+        background-color: #f5f5f5;
+      }
+    }
+  }
+}

@@ -1,0 +1,17 @@
+.assign-maali-table{
+    // border:1px solid;
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+      
+      th, td {
+        padding: 10px;
+        border: 1px solid #ddd;
+        text-align: left;
+      }
+      
+      th {
+        background-color: #f4f4f4;
+        width: 30%; /* Adjust based on your layout needs */
+      }
+}
