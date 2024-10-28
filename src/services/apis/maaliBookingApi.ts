@@ -1,3 +1,4 @@
+//maali booking apis
 import { adminAxiosInstance } from "../axiosInstance";
 
 const getMaaliBookings = async (page = 1, pageSize = 10, searchQuery = '', statusQuery = '', currentTab?: string) => {
