@@ -11,6 +11,8 @@ import { nurseryApi } from '../services/apis/nurseries';
 import NurseryCard from '../components/NurseryCard';
 import NurseryTable from '../components/NurseryTable';
 import NurseryDetailsModal from '../components/NurseryDetailsModal';
+import { toast } from 'react-toastify';
+import axios from 'axios';
 const { TabPane } = Tabs;
 
 const Nurseries: React.FC = () => {
@@ -81,9 +83,23 @@ const Nurseries: React.FC = () => {
         setIsViewModal(false)
         setSelectedNursery(null);
     };
-    const handleDeleteConfirm = () => {
+    
+    const handleDeleteConfirm = async() => {
         // Add logic to handle delete here
-        setIsDeleteModalVisible(false); // Close delete confirmation modal after confirmation
+        console.log(selectedNursery);
+        try {
+            const res = await nurseryApi.deleteNurseryById(selectedNursery._id);
+            console.log(res);
+            if (res.status === 200) {
+                //removes deleted item from the state
+                setNurseries(nurseries.filter((i:any) => i._id !== selectedNursery._id));
+                setSelectedNursery(null)
+                setIsDeleteModalVisible(false); // Close delete confirmation modal after confirmation
+            }  
+            } catch (error) {
+            toast.error('Not able to delete.')
+            console.log(error);
+        }
     };
 
     const handleDeleteCancel = () => {

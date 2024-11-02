@@ -1,4 +1,4 @@
-import { EditOutlined, EyeOutlined } from '@ant-design/icons';
+import { DeleteOutlined, EditOutlined, EyeOutlined } from '@ant-design/icons';
 import { Button, Card, Col, Tag } from 'antd';
 const NurseryCard = ({ nursery, onShowDetails, onEdit, onDelete }: any) => (
     <Col xs={24} sm={12} md={8} lg={6} xl={4} key={nursery.key}>
@@ -7,7 +7,7 @@ const NurseryCard = ({ nursery, onShowDetails, onEdit, onDelete }: any) => (
             actions={[
                 <Button type="link" key="details" onClick={() => onShowDetails(nursery)}><EyeOutlined /></Button>,
                 <Button type="primary" key="edit" onClick={() => onEdit(nursery)}><EditOutlined /></Button>,
-                // <Button type="default" key="delete" onClick={() => onDelete(nursery)}><DeleteOutlined /></Button>,
+                <Button type="default" key="delete" onClick={() => onDelete(nursery)}><DeleteOutlined /></Button>,
             ]}
             className="custom-card-actions"
             bodyStyle={{ padding: '16px' }}
