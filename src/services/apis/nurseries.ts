@@ -9,7 +9,9 @@ const getNurseries = (page = 1, pageSize = 10, searchQuery = '', statusQuery='')
         },
     });
 };
-
+const deleteNurseryById = (nurseryId:string) => {
+    return adminAxiosInstance.delete(`/delete-nurserie/${nurseryId}/`);
+};
 const addNursery = (nurseryData: any) => {
     return adminAxiosInstance.post('/nurseries/', nurseryData);
 };
@@ -21,7 +23,8 @@ const getNurseryById = (nurseryId:string) => {
     return adminAxiosInstance.get(`/nurseries/${nurseryId}/`);
 };
 
+
 export const nurseryApi = {
-    addNursery, editNursery, getNurseries, getNurseryById
+    addNursery, editNursery, getNurseries, getNurseryById, deleteNurseryById
 }
 // Add more nurseries-related API functions as needed

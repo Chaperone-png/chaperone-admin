@@ -17,13 +17,21 @@ const MaaliBookings: React.FC = () => {
     const [searchQuery, setSearchQuery] = useState<string>('');
     const [statusFilter, setStatusFilter] = useState<string>('');
     const [currentTab, setCurrentTab] = useState<string>("all");
+    const sortBookingsByDate = (bookings: any[]) => {
+        return [...bookings].sort((a, b) => {
+          const dateA = new Date(a.date).getTime();
+          const dateB = new Date(b.date).getTime();
+          return dateB - dateA; // Descending order (most recent first)
+        });
+      };
+
     const fetchBookings = async (page: number = 1, pageSize: number = 10, searchQuery: string = '', statusQuery: string = '', currentTab?: string) => {
         try {
             setIsLoading(true);
             const response = await maaliBookingApi.getMaaliBookings(page, pageSize, searchQuery, statusQuery, currentTab);
             console.log(response)
             if (response.data) {
-                setBookings(response.data);
+                setBookings(sortBookingsByDate(response.data));
                 setCurrentPage(response.currentPage);
                 setTotalBookings(response.total);
             }

@@ -1,4 +1,4 @@
-import { EditTwoTone, PlusOutlined, EyeTwoTone, UploadOutlined } from '@ant-design/icons';
+import { EditTwoTone, PlusOutlined, EyeTwoTone, UploadOutlined, DeleteOutlined } from '@ant-design/icons';
 import { Button, Space, Table, Tag, Modal, Select, message, Upload } from 'antd';
 import moment from 'moment';
 import { useEffect, useState } from 'react';
@@ -7,6 +7,8 @@ import CreatePlantModal from './CreatePlantModal';
 import { AdminPlantTye } from '../../../types';
 import PlantDetails from './PlantDetails';
 import { read, utils } from 'xlsx';
+import { toast } from 'react-toastify';
+import ConfirmationModal from '../../ConfirmationModal';
 const fileToArrayBuffer = (file: File): Promise<ArrayBuffer> => {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -29,6 +31,8 @@ const AllPlants = () => {
   const [selectedType, setSelectedType] = useState<AdminPlantTye | null>(null);
   const [selectedPlant, setSelectedPlant] = useState<AdminPlantTye | null>(null);
   const [fileContent, setFileContent] = useState<any[]>([]); // State for file content
+  const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
+  const [selectedPlantDel, setSelectedPlantDel] = useState<any>(null);
 
   useEffect(() => {
     fetchPlants();
@@ -46,6 +50,19 @@ const AllPlants = () => {
     }
   };
 
+  const handleDeleteConfirm = async() => {
+    toast.info('delete');
+  }
+
+  const handleDeleteClick = (plant: any) => {
+    console.log(plant);
+    
+    setSelectedPlantDel(plant);
+    setIsDeleteModalVisible(true); // Show delete confirmation modal
+  };
+  const handleDeleteCancel = () => {
+    setIsDeleteModalVisible(false); // Close delete confirmation modal if canceled
+  };
   const handleEdit = (record: AdminPlantTye) => {
     setSelectedType(record);
     setIsModalOpen(true);
@@ -128,17 +145,20 @@ const AllPlants = () => {
       title: 'Plant Name',
       dataIndex: 'plantName',
       key: 'plantName',
+      width: 280,
+      font:600
     },
     {
       title: 'Categories',
       dataIndex: 'plantTypeIds',
       key: 'plantTypeIds',
+      width: 180,
       render: (plantTypeIds: any[]) => (
         <>
           {plantTypeIds.length > 0 ? (
             <>
               {plantTypeIds.map((plantType) => (
-                <Tag color="#2db7f5" key={plantType._id}>
+                <Tag color="#E4FEEC" style={{color:'#012e1f', fontWeight:'normal', border:'0.3px solid #dce8dd'}} key={plantType._id}>
                   {plantType.title}
                 </Tag>
               ))}
@@ -169,10 +189,11 @@ const AllPlants = () => {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
+      width: 40,
       render: (status: any, record: AdminPlantTye) => (
         <Select
           defaultValue={status}
-          style={{ width: 120 }}
+          style={{ width: 100 }}
           onChange={(value) => handleStatusChange(value, record)}
         >
           <Option value="active">Active</Option>
@@ -191,7 +212,7 @@ const AllPlants = () => {
           <Button onClick={() => handleView(record)}>
             <EyeTwoTone />
           </Button>
-          {/* <Button onClick={() => handleDelete(record)}><DeleteOutlined /></Button> */}
+          <Button type="default" onClick={() => handleDeleteClick(record)}><DeleteOutlined type="danger" /></Button>
         </Space>
       ),
     },
@@ -258,6 +279,16 @@ const AllPlants = () => {
         </Modal>
       )}
       <Table columns={columns} dataSource={allPlants} pagination={false} />
+      
+      <ConfirmationModal
+                visible={isDeleteModalVisible}
+                title="Confirm Delete"
+                description={`Are you sure you want to delete this nursery (${selectedPlantDel?.plantName})?`}
+                confirmText="Delete"
+                cancelText="Cancel"
+                onConfirm={handleDeleteConfirm}
+                onCancel={handleDeleteCancel}
+            />
 
     </div>
   );

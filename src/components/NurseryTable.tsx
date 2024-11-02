@@ -81,9 +81,9 @@ const NurseryTable = ({
                     <Button type="default" onClick={() => onEdit(record)}>
                         <EditOutlined />
                     </Button>
-                    {/* <Button type="default" onClick={() => onDelete(record)}>
+                    <Button type="default" onClick={() => onDelete(record)}>
                         <DeleteOutlined type="danger" />
-                    </Button> */}
+                    </Button>
                 </Space>
             ),
         },
