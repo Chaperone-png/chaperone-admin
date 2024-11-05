@@ -44,6 +44,12 @@ const updatePlant = (plantId: any, plantData: any) => {
 const getAdminPlants = () => {
   return adminAxiosInstance.get("/master-data/plants/");
 };
+const deleteAdminPlant = (plantId: any) => {
+  return adminAxiosInstance.delete(`/master-data/plants-delete/${plantId}`);
+};
+const deleteAdminPlantType = (plantId: any) => {
+  return adminAxiosInstance.delete(`/master-data/plant-type-delete/${plantId}`);
+};
 const getAdminPotPlanters = () => {
   return adminAxiosInstance.get("/master-data/plants/");
 };
@@ -89,4 +95,6 @@ export const plantApi = {
   bulkUploadPlantTypes,
   bulkUploadPlants,
   getAdminPotPlanters,
+  deleteAdminPlant,
+  deleteAdminPlantType
 };

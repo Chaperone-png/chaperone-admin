@@ -1,15 +1,18 @@
-import { EditTwoTone, PlusOutlined, UploadOutlined } from '@ant-design/icons';
+import { DeleteOutlined, EditTwoTone, PlusOutlined, UploadOutlined } from '@ant-design/icons';
 import { Button, Space, Table, Tag, Upload, message } from 'antd';
 import moment from 'moment';
 import { useEffect, useState } from 'react';
 import { plantApi } from '../../../services/apis/plantApi';
 import PlantTypeModal from './PlantTypeModal';
 import xlsx from 'xlsx';
+import ConfirmationModal from '../../ConfirmationModal';
+import { toast } from 'react-toastify';
 
 const PlantTypes = () => {
     const [plantTypesData, setPlantTypes] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [selectedType, setSelectedType] = useState(null);
+    const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
+    const [selectedType, setSelectedType] = useState<any>(null);
 
     useEffect(() => {
         fetchPlantTypes();
@@ -28,6 +31,28 @@ const PlantTypes = () => {
         setSelectedType(record);
         setIsModalOpen(true);
     };
+    const handleDelete = (record: any) => {
+        setSelectedType(record);
+        setIsDeleteModalVisible(true);
+    };
+    const handleDeleteConfirm = async() => {
+    const toastId = toast.loading('deleting Plant type.');
+    try{
+     const res = await plantApi.deleteAdminPlantType(selectedType._id);
+     toast.success('Plant Type deleted.');
+     setPlantTypes(plantTypesData.filter((p:any) => p._id !== selectedType._id ));
+     setIsDeleteModalVisible(false);
+    }catch(e:any){
+      toast.error(e.response?.data?.error||'Not able to delete.');
+    }finally{
+      toast.dismiss(toastId);
+    }
+    };
+
+    const handleDeleteCancel = () => {
+        setIsDeleteModalVisible(false);
+    };
+    
 
     const handleModalClose = () => {
         setIsModalOpen(false);
@@ -108,6 +133,7 @@ const PlantTypes = () => {
             render: (text: any, record: any) => (
                 <Space size="small">
                     <Button onClick={() => handleEdit(record)}><EditTwoTone /></Button>
+                    <Button onClick={() => handleDelete(record)}><DeleteOutlined type="danger" /></Button>
                 </Space>
             ),
         },
@@ -129,7 +155,16 @@ const PlantTypes = () => {
             </Upload>
             {isModalOpen && <PlantTypeModal isOpen={isModalOpen} onClose={handleModalClose} plantType={selectedType} onSuccess={fetchPlantTypes} />}
             <Table columns={columns} dataSource={plantTypesData} pagination={false} />
-
+            
+            <ConfirmationModal
+                visible={isDeleteModalVisible}
+                title="Confirm Delete"
+                description={`Are you sure you want to delete this Plant type (${selectedType?.title})?`}
+                confirmText="Delete"
+                cancelText="Cancel"
+                onConfirm={handleDeleteConfirm}
+                onCancel={handleDeleteCancel}
+            />
         </div>
     );
 };

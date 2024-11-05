@@ -7,8 +7,8 @@ import CreatePlantModal from './CreatePlantModal';
 import { AdminPlantTye } from '../../../types';
 import PlantDetails from './PlantDetails';
 import { read, utils } from 'xlsx';
-import { toast } from 'react-toastify';
 import ConfirmationModal from '../../ConfirmationModal';
+import { toast } from 'react-toastify';
 const fileToArrayBuffer = (file: File): Promise<ArrayBuffer> => {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -39,19 +39,33 @@ const AllPlants = () => {
   }, []);
 
   const fetchPlants = async () => {
+    const toastId = toast.loading('Fetching plants...');
     try {
       const response = await plantApi.getAdminPlants();
       if (response?.data && Array.isArray(response.data)) {
         setAllPlants(response.data);
       }
       setIsModalOpen(false);
-    } catch (error) {
+    } catch (error:any) {
       console.error('Error fetching plant types:', error);
+      toast.error('Not able to fetch, try again.');
+    } finally {
+      toast.dismiss(toastId)
     }
   };
 
   const handleDeleteConfirm = async() => {
-    toast.info('delete');
+    const toastId = toast.loading('deleting Plant.') 
+    try{
+     const res = await plantApi.deleteAdminPlant(selectedPlantDel._id);
+     toast.success('Plant deleted.');
+     setAllPlants(allPlants.filter(p => p._id !== selectedPlantDel._id ));
+     setIsDeleteModalVisible(false);
+    }catch(e:any){
+      toast.error(e.response?.data?.error||'Not able to delete.');
+    }finally{
+      toast.dismiss(toastId)
+    }
   }
 
   const handleDeleteClick = (plant: any) => {
