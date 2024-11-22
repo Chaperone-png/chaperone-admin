@@ -84,6 +84,7 @@ const AddPotPlanter = () => {
     };
 
     const onSuccess = (plantData: any) => {
+        console.log({ plantData })
         setSearchParams({ plantId: plantData._id, productType: selectedProductTypeId || '' });
         dispatch(setCreatedPlantData(plantData));
         handleNext();

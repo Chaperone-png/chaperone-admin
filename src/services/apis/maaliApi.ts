@@ -41,6 +41,17 @@ const getMaali = async (maaliId = "") => {
     throw new Error("Error fetching maali");
   }
 };
+
+const deleteMaali = async (maaliId = "") => {
+  try {
+    const response = await maaliAxiosInstance.delete(`/maali/${maaliId}/`);
+    return response;
+  } catch (error) {
+    console.error("Error fetching maali:", error);
+    throw new Error("Error fetching maali");
+  }
+};
+
 const assignMaaliToBooking = (bookingId: string, maaliId: string) => {
   return adminAxiosInstance.post("/assign-maali", {
     maaliBookingId: bookingId,
@@ -54,4 +65,5 @@ export const maaliApi = {
   updateMaaliStatus,
   getMaali,
   assignMaaliToBooking,
+  deleteMaali
 };

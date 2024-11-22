@@ -1,6 +1,6 @@
 import { Modal } from 'antd';
 import moment from 'moment';
-import React from 'react';
+import React, { useMemo } from 'react';
 import './maali-bookings.scss';
 
 interface Props {
@@ -10,6 +10,30 @@ interface Props {
 }
 
 const ViewMaaliBooking = ({ isOpen, bookingDetails, onCancel }: Props) => {
+
+    // Calculate GST value and final paid amount using useMemo
+    const { subtotal } = bookingDetails;
+
+    console.log({ bookingDetails })
+
+    const { bookingGSTValue, bookingFinalPaidValue } = useMemo(() => {
+        const gstRate = 0.18; // 18%
+        const gstValue = subtotal * gstRate;
+        const finalPaidValue = subtotal + gstValue;
+
+        return {
+            bookingGSTValue: gstValue.toFixed(2), // Format to 2 decimal places
+            bookingFinalPaidValue: finalPaidValue.toFixed(2) // Format to 2 decimal places
+        };
+    }, [subtotal]);
+
+    const { isPaymentPaidAlready } = useMemo(() => {
+        let isPaymentPaidAlready = false;
+        if (bookingDetails?.orderId !== "" && bookingDetails?.paymentId !== "")
+            isPaymentPaidAlready = true;
+        return { isPaymentPaidAlready }
+    }, [bookingDetails])
+
     // Render dynamic booking information based on planType
     const renderBookingPlanDetails = () => {
         const plan = bookingDetails.planType;
@@ -64,7 +88,7 @@ const ViewMaaliBooking = ({ isOpen, bookingDetails, onCancel }: Props) => {
     return (
         <Modal
             open={isOpen}
-            title="Assign Maali"
+            title="View Maali Booking Info"
             onCancel={onCancel}
             footer={null}
             style={{ maxWidth: '90vw' }}
@@ -76,6 +100,12 @@ const ViewMaaliBooking = ({ isOpen, bookingDetails, onCancel }: Props) => {
                             <th>Customer Name</th>
                             <td>{bookingDetails.addressId?.fullName}</td>
                         </tr>
+
+                        <tr>
+                            <th>Customer Phone Number</th>
+                            <td>{bookingDetails.addressId?.mobileNumber}</td>
+                        </tr>
+
                         <tr>
                             <th>Address</th>
                             <td>
@@ -84,6 +114,7 @@ const ViewMaaliBooking = ({ isOpen, bookingDetails, onCancel }: Props) => {
                                 City - {bookingDetails.addressId?.city} <br />
                                 State - {bookingDetails.addressId?.state} <br />
                                 Pincode - {bookingDetails.addressId?.pincode} <br />
+                                Mobile Number - {bookingDetails?.addressId?.mobileNumber}  <br />
                                 Landmark - {bookingDetails.addressId?.landmark}
                             </td>
                         </tr>
@@ -109,11 +140,16 @@ const ViewMaaliBooking = ({ isOpen, bookingDetails, onCancel }: Props) => {
                         </tr>
                         <tr>
                             <th>GST</th>
-                            <td>{bookingDetails.gst}</td>
+                            <td>{bookingGSTValue}</td>
                         </tr>
                         <tr>
                             <th>Total</th>
-                            <td>{bookingDetails.total}</td>
+                            <td>Rs. {Math.round(bookingFinalPaidValue)}</td>
+                        </tr>
+
+                        <tr>
+                            <th>Payment Status</th>
+                            <td>{isPaymentPaidAlready ? 'Paid' : 'Unpaid'}</td>
                         </tr>
                         {/* Dynamic plan details */}
                         {renderBookingPlanDetails()}

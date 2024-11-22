@@ -1,3 +1,4 @@
+//AssignMaaliModal.tsx
 import { message, Modal, Select, Spin } from 'antd';
 import moment from 'moment';
 import React, { useCallback, useEffect, useState } from 'react';
@@ -107,6 +108,12 @@ const AssignMaaliModal = (props: Props) => {
                             <th>Customer Name</th>
                             <td>{bookingDetails.addressId?.fullName}</td>
                         </tr>
+
+                        <tr>
+                            <th>Customer Phone Number</th>
+                            <td>{bookingDetails.addressId?.mobileNumber}</td>
+                        </tr>
+
                         <tr>
                             <th>Address</th>
                             <td>

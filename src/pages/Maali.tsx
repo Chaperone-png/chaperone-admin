@@ -28,6 +28,7 @@ const Maalis: React.FC = () => {
     const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false); // State for delete confirmation modal
     const [selectedStatus, setSelectedStatus] = useState<string>(''); // Initialize with an empty string for all statuses
     const [isLoading, setIsLoading] = useState(false);
+    const [reload, setReload] = useState(false);
 
     const fetchMaalis = async (page: number = 1, pageSize: number = 10, searchQuery?: string, statusQuery?: 'active' | 'pending' | 'inactive' | 'rejected' | any) => {
         try {
@@ -49,7 +50,8 @@ const Maalis: React.FC = () => {
 
     useEffect(() => {
         fetchMaalis();
-    }, []);
+        setReload(false);
+    }, [reload]);
 
     const handlePageChange = (page: number, pageSize?: number) => {
         setCurrentPage(page);
@@ -166,6 +168,7 @@ const Maalis: React.FC = () => {
                         onChange: handlePageChange,
                     }}
                     loading={isLoading}
+                    setReload={setReload}
                 />
             )}
 

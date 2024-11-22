@@ -34,7 +34,7 @@ const Products: React.FC = () => {
         if (response?.data) {
           setPlants(response.data?.plants);
           setTotalPlants(response?.data?.totalPages);
-          setFilteredPlants(response.data?.plants); // Set the filtered plants initially to all plants
+          setFilteredPlants(response.data?.plants);
         } else {
           setPlants([]);
           setFilteredPlants([]);

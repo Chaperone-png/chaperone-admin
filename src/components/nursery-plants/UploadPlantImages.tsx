@@ -7,6 +7,7 @@ import ImageUploader from './ImageUploader';
 import UploadedImages from './UploadedImages';
 import { useNavigate } from 'react-router-dom';
 import { potPlanterApi } from '../../services/apis/potPlanterApi';
+import { useLoader } from '../../context/LoaderContext';
 
 interface Props {
     createdPlantData: AdminPlantTye;
@@ -22,6 +23,7 @@ interface UploadedImage {
 }
 
 const UploadPlantImages = (props: Props) => {
+    const { startLoader, stopLoader } = useLoader();
     const [colors, setColors] = useState<any[]>([]);
     const [uploadedImages, setUploadedImages] = useState<UploadedImage[]>([]);
     const [isSaving, setIsSaving] = useState(false)
@@ -63,55 +65,72 @@ const UploadPlantImages = (props: Props) => {
         });
     }, []);
 
-    const handleSaveImages = async (potType?: string, color?: string) => {
-        const formData = new FormData();
-        console.log(uploadedImages, 'uploadedImagesuploadedImages')
-        setIsSaving(true)
-        if (createdPlantData.containerType === 'bag') {
-            // Handle save for bag type
-            const bagImages = uploadedImages.find(item => item.plant === 'bag');
-            if (bagImages) {
-                formData.append('containerType', createdPlantData.containerType);
-                bagImages.images.forEach(image => {
-                    formData.append('images', image);
-                });
-            }
-        } else {
-            // Handle save for pot or planter type
-            const specificImages = uploadedImages.find(item => item.color === color);
-            if (specificImages) {
-                formData.append('color', specificImages.color);
-                formData.append('containerType', createdPlantData.containerType);
+    interface SaveImagesPayload {
+        containerType?: string;
+        color?: string;
+        awsUrl: string[]; // Use an array to accommodate multiple URLs
+    }
 
-                specificImages.images.forEach(image => {
-                    formData.append('images', image);
-                });
-            }
-        }
+    const handleSaveImages = async (potType?: string, color?: string) => {
+        const payload: SaveImagesPayload = { awsUrl: [] }; // Initialize payload with awsUrl as an array
+        setIsSaving(true);
 
         try {
+            startLoader();
+
+            if (createdPlantData.containerType === 'bag') {
+                // Handle save for bag type
+                const bagImages = uploadedImages.find(item => item.plant === 'bag');
+                if (bagImages) {
+                    payload.containerType = createdPlantData.containerType; // Set containerType
+                    bagImages.images.forEach(image => {
+                        if (Array.isArray(image.awsUrl)) {
+                            payload.awsUrl.push(...image.awsUrl); // Spread array into payload
+                        } else {
+                            payload.awsUrl.push(image.awsUrl); // Push single URL
+                        }
+                    });
+                }
+            } else {
+                // Handle save for pot or planter type
+                const specificImages = uploadedImages.find(item => item.color === color);
+                if (specificImages) {
+                    payload.color = specificImages.color; // Set color
+                    payload.containerType = createdPlantData.containerType; // Set containerType
+
+                    specificImages.images.forEach(image => {
+                        if (Array.isArray(image.awsUrl)) {
+                            payload.awsUrl.push(...image.awsUrl); // Spread array into payload
+                        } else {
+                            payload.awsUrl.push(image.awsUrl); // Push single URL
+                        }
+                    });
+                }
+            }
+
             let response;
             if (productType === 'Pot/Planter') {
-                response = await potPlanterApi.updateNurseryImages(nurseryId, plantId, formData);
-
+                response = await potPlanterApi.updateNurseryImages(nurseryId, plantId, payload);
             } else {
-                response = await nurseryPlantApi.updateNurseryImages(nurseryId, plantId, formData);
-
+                response = await nurseryPlantApi.updateNurseryImages(nurseryId, plantId, payload);
             }
-            console.log(response, 'RESPONSE');
+
             if (response.data.images) {
-                setSavedImages(response.data.images)
+                setSavedImages(response.data.images);
             }
             setUploadedImages([]);
-            message.success('Plant details saved successfully!')
-            navigate('/products')
+            message.success('Plant details saved successfully!');
+            navigate('/products');
         } catch (error: any) {
-            message.error('Something went wrong!')
+            message.error('Something went wrong!');
             console.log(error, 'ERROR');
         } finally {
-            setIsSaving(false)
+            setIsSaving(false);
+            stopLoader();
         }
     };
+
+
 
     return (
         <div>
@@ -135,7 +154,7 @@ const UploadPlantImages = (props: Props) => {
                     ))}
                 </>
             }
-            <UploadedImages images={savedImages} containerType={createdPlantData?.containerType} />
+            <UploadedImages images={savedImages} productType={createdPlantData?.productType?.title} id={createdPlantData?._id} containerType={createdPlantData?.containerType} setSavedImages={setSavedImages} />
         </div>
     );
 };

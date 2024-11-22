@@ -141,6 +141,7 @@ const ContainerDetails = ({ nurseryId, plantId, handleNext, updateApi, productTy
   };
   const materialTypes = selectedContainerType === 'planter' ? planterTypes : potTypes
 
+  console.log({ createdPlantData, productType })
   return (
     <Form form={form} onFinish={onFinish} layout="horizontal" className="container-details-form">
       {productType !== 'Pot/Planter' && <Row>
@@ -197,7 +198,9 @@ const ContainerDetails = ({ nurseryId, plantId, handleNext, updateApi, productTy
               checkedPotTypes={checkedPotTypes}
               setOffers={setOffers}
               offers={offers}
-              sizes={sizes} checkedSizes={checkedSizes} containerType={selectedContainerType} />
+              sizes={sizes} checkedSizes={checkedSizes} containerType={selectedContainerType} 
+              isPotPlanter={true}
+              />
             {/* {selectedContainerType === CONTAINER_TYPES.BAG ? (
             ) : <PotDetails sizes={sizes} checkedSizes={checkedSizes}
               containerType={selectedContainerType}

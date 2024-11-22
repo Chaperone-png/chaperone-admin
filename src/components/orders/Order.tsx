@@ -124,7 +124,7 @@ const Orders: React.FC <Props> = ({ type}) => {
       dataIndex: "user",
       render: (user: any) => (
         <span>
-          {user?.address?.street}, {user?.address?.city}, {user?.address?.state}
+          {user?.address?.mobileNumber} - {user?.address?.street}, {user?.address?.city}, {user?.address?.state}
         </span>
       ),
       width: "20%",

@@ -1,3 +1,4 @@
+//master-data/plant-day-care/DayCareTable.tsx
 import React, { useState } from 'react';
 import { Table, Button, Modal, Select, Tag } from 'antd';
 import { format } from 'date-fns';
@@ -53,7 +54,7 @@ const DayCareTable: React.FC<DayCareTableProps> = ({ dayCares, allListedMaalis, 
             title: '#',
             dataIndex: 'index',
             render: (_: any, __: any, index: number) => index + 1,
-            width: '5%',
+            width: '3%',
         },
         {
             title: 'Location',
@@ -64,7 +65,7 @@ const DayCareTable: React.FC<DayCareTableProps> = ({ dayCares, allListedMaalis, 
             title: 'Scheduled Date',
             dataIndex: 'scheduledDate',
             render: (date: string) => format(new Date(date), 'dd/MM/yyyy'),
-            width: '15%',
+            width: '9%',
         },
         {
             title: 'User Info',
@@ -85,7 +86,7 @@ const DayCareTable: React.FC<DayCareTableProps> = ({ dayCares, allListedMaalis, 
                 const color = status === 'processing' ? 'blue' : 'green';
                 return <Tag color={color}>{status.toUpperCase()}</Tag>;
             },
-            width: '10%',
+            width: '9%',
         },
         {
             title: 'Plants Info',
@@ -93,25 +94,29 @@ const DayCareTable: React.FC<DayCareTableProps> = ({ dayCares, allListedMaalis, 
             render: (plants: PlantInfo[]) => (
                 <div>
                     {plants.map((plant, index) => (
-                        <div key={index}>
-                            <img className="plant-image" src={plant.imageUrl} alt={plant.sizeTitle} />
-                            <div>{`${plant.sizeTitle} (${plant.quantity} plants)`}</div>
-                            <div>{`Care Duration: ${plant.days} days`}</div>
+                        <div key={index} className='imgContentDetail'>
+                            <div className='imgWrapper'>
+                                <img className="plant-image" src={plant.imageUrl} alt={plant.sizeTitle} />
+                            </div>
+                            <div className='contentWrapper'>
+                                <div>{`${plant.sizeTitle} (${plant.quantity} plants)`}</div>
+                                <div>{`Care Duration: ${plant.days} days`}</div>
+                            </div>
                         </div>
                     ))}
                 </div>
             ),
-            width: '20%',
+            width: '25%',
         },
         {
             title: 'Action',
             dataIndex: '_id',
             render: (_: any, record: DayCare) => (
-                <Button type="link" className="assign-maali" onClick={() => handleAssignMaali(record)}>
+                <Button type="link" className=" ant-btn ant-btn-primary" onClick={() => handleAssignMaali(record)}>
                     {record.journeySummary.length > 0 ? 'Change Maali' : 'Assign Maali'}
                 </Button>
             ),
-            width: '15%',
+            width: '10%',
         },
     ];
 

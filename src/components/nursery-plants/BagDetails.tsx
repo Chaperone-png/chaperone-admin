@@ -1,5 +1,6 @@
+//Bag Details Page
 import { Checkbox, Col, Form, Input, InputNumber, Row } from 'antd';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { CONTAINER_TYPES } from '../../utils/constants';
 
 interface Size {
@@ -18,12 +19,25 @@ interface BagDetailsProps {
   checkedPotTypes: any;
   checkedColors: any;
   offers: any;
-  setOffers: any
+  setOffers: any;
+  isPotPlanter: boolean;
 }
-const potColors = ['Red', 'Blue', 'Green', 'White', 'Black'];
 
 
-const BagDetails: React.FC<BagDetailsProps> = ({ setOffers, offers, sizes, checkedSizes, containerType, setCheckedColors, checkedPotTypes, checkedColors }) => {
+const BagDetails: React.FC<BagDetailsProps> = ({ setOffers, offers, sizes, checkedSizes, containerType, setCheckedColors, checkedPotTypes, checkedColors, isPotPlanter }) => {
+
+  console.log({isPotPlanter})
+  const potColors = useMemo(() => {
+    if (!isPotPlanter) {
+      return ['Red', 'Blue', 'Green', 'White', 'Black'];
+    }
+    if (isPotPlanter) {
+      return ['Red', 'Blue', 'Green', 'White', 'Black', 'Orange', 'Yellow', 'Grey', 'Brown'];
+    }
+    // Default to an empty array if productType doesn't match the above conditions
+    return [];
+  }, [isPotPlanter]);
+
   const handleColorChange = (checkedSize: string, checkedValues: string[]) => {
     setCheckedColors((prev: any) => ({ ...prev, [checkedSize]: checkedValues }));
   };

@@ -1,8 +1,10 @@
-import { Button, Select, Space, Table } from 'antd';
+import { Button, Select, Space, Table, Modal } from 'antd';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { maaliApi } from '../../services/apis/maaliApi';
+import { DeleteOutlined } from '@ant-design/icons';
 import ActionModal from '../common/ActionModal';
+import { useLoader } from '../../context/LoaderContext';
 
 const { Option } = Select;
 
@@ -18,26 +20,32 @@ const MaaliTable: React.FC<{
         onChange: (page: number, pageSize?: number) => void;
     };
     loading: boolean;
-}> = ({ data, onShowDetails, onEdit, onDelete, pagination, loading }) => {
-    const navigate = useNavigate()
+    setReload: (value: boolean) => void;
+}> = ({ data, onShowDetails, onEdit, onDelete, pagination, loading, setReload }) => {
+    const navigate = useNavigate();
     const [modalVisible, setModalVisible] = useState(false);
     const [modalData, setModalData] = useState<{ id: string; status: string, type: string }>({ id: '', status: '', type: '' });
     const [description, setDescription] = useState('');
+    const [deleteModalVisible, setDeleteModalVisible] = useState(false);  // New state for delete confirmation modal
+    const [deleteRecord, setDeleteRecord] = useState<any>(null);  // State to hold the record to be deleted
+
+    const { startLoader, stopLoader } = useLoader();
     const handleUpdateStatus = async (id: string, status: string) => {
         try {
             const payload: any = {
                 status,
             };
             if (status === 'rejected') {
-                payload.rejectionReason = description
+                payload.rejectionReason = description;
             } else if (status === 'pending') {
-                payload.pendingDetails = description
+                payload.pendingDetails = description;
             }
-            await maaliApi.updateMaaliStatus(id, payload)
+            await maaliApi.updateMaaliStatus(id, payload);
         } catch (e) {
-
+            console.error("Error updating status:", e);
         }
-    }
+    };
+
     const handleStatusChange = (id: string, value: string) => {
         if (value === 'rejected' || value === 'pending') {
             setModalData({ id, status: value, type: value });
@@ -46,6 +54,7 @@ const MaaliTable: React.FC<{
             handleUpdateStatus(id, value);
         }
     };
+
     const handleModalOk = () => {
         handleUpdateStatus(modalData.id, modalData.status);
         setModalVisible(false);
@@ -57,7 +66,28 @@ const MaaliTable: React.FC<{
         setDescription('');
     };
 
+    // Handle delete action
+    const handleDelete = async () => {
+        if (deleteRecord) {
+            try {
+                startLoader();
+                await maaliApi.deleteMaali(deleteRecord._id);  // Call the API to delete the record
+                onDelete(deleteRecord);
+                window.location.reload();
+            } catch (e) {
+                console.error("Error deleting maali:", e);
+            }
+            finally {
+                stopLoader();
+                setReload(true);
 
+            }
+        }
+    };
+
+    const handleDeleteCancel = () => {
+        setDeleteModalVisible(false);
+    };
 
     const columns = [
         {
@@ -90,8 +120,7 @@ const MaaliTable: React.FC<{
             title: 'Work Locations',
             dataIndex: 'workPincodes',
             render: (text: any, record: any) => {
-                return <>
-                    {(record.workPincodes)?.join(',')}</>
+                return <>{(record.workPincodes)?.join(',')}</>;
             },
         },
         {
@@ -107,7 +136,6 @@ const MaaliTable: React.FC<{
                     <Option value="pending">Request Change</Option>
                     <Option value="rejected">Rejected</Option>
                     <Option value="approved">Approved</Option>
-                    {/* <Option value="rejected_by_maali">Rejected by Maali</Option> */}
                 </Select>
             ),
         },
@@ -118,6 +146,16 @@ const MaaliTable: React.FC<{
                 <Space size="middle">
                     <Button onClick={() => onShowDetails(record)}>View</Button>
                     <Button onClick={() => navigate(`/maalis/edit/${record._id}`)}>Edit</Button>
+                    <Button
+                        icon={<DeleteOutlined />}
+                        onClick={() => {
+                            setDeleteRecord(record);
+                            setDeleteModalVisible(true);  // Show confirmation modal for deletion
+                        }}
+                        danger
+                    >
+                        Delete
+                    </Button>
                 </Space>
             ),
         },
@@ -145,7 +183,21 @@ const MaaliTable: React.FC<{
                 value={description}
                 placeholder='Enter more details'
                 isOpen={modalVisible}
-                title={modalData.type === 'rejected' ? 'Reject Maali Application' : 'Request Changes'} />
+                title={modalData.type === 'rejected' ? 'Reject Maali Application' : 'Request Changes'}
+            />
+
+            {/* Delete Confirmation Modal */}
+            <Modal
+                title="Confirm Deletion"
+                visible={deleteModalVisible}
+                onOk={handleDelete}
+                onCancel={handleDeleteCancel}
+                okText="Delete"
+                cancelText="Cancel"
+                okButtonProps={{ danger: true }}
+            >
+                <p>Are you sure you want to delete this maali?</p>
+            </Modal>
         </>
     );
 };

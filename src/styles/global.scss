@@ -324,6 +324,33 @@ select:focus {
     }
   }
 }
+
+/* Scrollbar width */
+::-webkit-scrollbar {
+  width: 5px;
+  /* Width of the scrollbar */
+}
+
+/* Track (part of the scrollbar not covered by the thumb) */
+::-webkit-scrollbar-track {
+  background: #f1f1f1 !important;
+  /* Color of the track */
+}
+
+/* Handle (part of the scrollbar that moves) */
+::-webkit-scrollbar-thumb {
+  background: green !important;
+  /* Color of the handle */
+  border-radius: 10px;
+  /* Roundness of the handle */
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: green !important;
+  /* Color of the handle on hover */
+}
+
 /* Scrollbar width */
 ::-webkit-scrollbar {
   width: 5px;
@@ -350,28 +377,11 @@ select:focus {
   /* Color of the handle on hover */
 }
 
-/* Scrollbar width */
-::-webkit-scrollbar {
-  width: 5px;
-  /* Width of the scrollbar */
-}
 
-/* Track (part of the scrollbar not covered by the thumb) */
-::-webkit-scrollbar-track {
-  background: #f1f1f1 !important;
-  /* Color of the track */
-}
+.ant-btn.ant-btn-primary {
+  color: #fff;
 
-/* Handle (part of the scrollbar that moves) */
-::-webkit-scrollbar-thumb {
-  background: green !important;
-  /* Color of the handle */
-  border-radius: 10px;
-  /* Roundness of the handle */
-}
-
-/* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-  background: green !important;
-  /* Color of the handle on hover */
+  &:hover {
+    color: #fff !important;
+  }
 }

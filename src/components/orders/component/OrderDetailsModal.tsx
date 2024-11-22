@@ -37,7 +37,10 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({ order, onClose })
           <h4>User Details:</h4>
           <p><strong>Name:</strong> {user?.username}</p>
           <p><strong>Contact:</strong> {user?.contactNumber}</p>
-          <p><strong>Address:</strong> {user?.address?.street}, {user?.address?.city}, {user?.address?.state}</p>
+          <p>
+  <strong>Address:</strong> 
+  {user?.address?.mobileNumber} - {user?.address?.houseNo} {user?.address?.area} {user?.address?.landmark && `- ${user?.address?.landmark}`} {user?.address?.city}, {user?.address?.state} - {user?.address?.pincode}, {user?.address?.country}
+</p>
         </div>
 
         <div className="order-items">

@@ -3,13 +3,13 @@ import axios, { AxiosError, AxiosResponse } from "axios";
 import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 
-const baseURL = "https://chaperoneserverco.com/api/";
+const baseURL = "https://chaperoneserverco.com/api";
 // const baseURL = "http://localhost:5000/api";
 
 const createAxiosInstance = (basePath: string) => {
   const instance = axios.create({
     baseURL: `${baseURL}${basePath}`,
-    timeout: 10000,
+    timeout: 40000,
     headers: {
       "Content-Type": "application/json",
     },

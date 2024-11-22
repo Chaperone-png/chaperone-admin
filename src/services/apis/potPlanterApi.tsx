@@ -26,9 +26,25 @@ const createPotPlanter = (nurseryId: any, data: any) => {
 const getPotPlanterById = (plantId: string,) => {
     return adminAxiosInstance.get(`/master-data/nurseries/pot-planters/${plantId}/`);
 };
+
 const updateNurseryPlant = (nurseryId: string, plantData: any, selectedPlantId: any) => {
-    return adminAxiosInstance.put(`/master-data/nurseries/${nurseryId}/pot-planters/${selectedPlantId}/`, plantData);
+    return adminAxiosInstance.put(`/master-data/nurseries/${nurseryId}/pot-planters/${selectedPlantId}/`, plantData, {
+        headers: {
+            "Cache-Control": "no-cache",
+        },
+
+    });
 };
+
+const updatePotPlanterStatus = (nurseryId: string, plantData: any, selectedPlantId: any) => {
+    return adminAxiosInstance.post(`/master-data/nurseries/${nurseryId}/pot-planters/status-update/${selectedPlantId}/`, plantData, {
+        headers: {
+            "Cache-Control": "no-cache",
+        },
+
+    });
+};
+
 const updateNurseryImages = (nurseryId: string, selectedPlantId: any, formData: any) => {
     return adminAxiosInstance.put(`/master-data/nurseries/${nurseryId}/pot-planters/${selectedPlantId}/images/`, formData);
 };
@@ -55,5 +71,6 @@ export const potPlanterApi = {
     updateNurseryPlant,
     updateNurseryImages,
     getNurseriesPotsPlanters,
-    updatePotPlanterOffers
+    updatePotPlanterOffers,
+    updatePotPlanterStatus
 }

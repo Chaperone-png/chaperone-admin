@@ -16,16 +16,23 @@ const AddPlantStep1: React.FC<Step1ContentProps> = ({
     handleAddPlant,
 }) => {
     const { selectedPlantTemplate } = useSelector((state: RootState) => state.nurseryPlant);
+
     return (
-        <div className="step-content" id='add-plant-step-1'>
+        <div className="step-content" id="add-plant-step-1">
             <div className="related-content">
                 <p>Please select an existing plant from the dropdown below or add a new plant using the button.</p>
             </div>
             <Select
-                style={{ marginBottom: 20 }}
+                style={{ marginBottom: 20, width: '100%' }}
                 placeholder="Select Plant"
                 onChange={handlePlantSelect}
                 value={selectedPlantTemplate?._id}
+                loading={!plants.length}
+                showSearch
+                filterOption={(input, option) => {
+                    const children = String(option?.children) || "";  // Type assertion
+                    return children?.toLowerCase().includes(input.toLowerCase());
+                }}
             >
                 {plants.map(plant => (
                     <Select.Option key={plant._id} value={plant._id}>
@@ -34,7 +41,6 @@ const AddPlantStep1: React.FC<Step1ContentProps> = ({
                 ))}
             </Select>
         </div>
-
     );
 };
 

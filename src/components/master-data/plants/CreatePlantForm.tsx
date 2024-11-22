@@ -23,7 +23,6 @@ interface CreatePlantFormProps {
     plantId: any
   } | undefined
   productTypeId?: any;
-
 }
 
 const CreatePlantForm: React.FC<CreatePlantFormProps> = ({ onSuccess, plantDetails, nursery, productTypeId }) => {
@@ -39,7 +38,14 @@ const CreatePlantForm: React.FC<CreatePlantFormProps> = ({ onSuccess, plantDetai
   const [waterSchedule, setWaterSchedule] = useState<string[]>([]); // State for water schedule checkboxes
   const [lightEfficient, setLightEfficient] = useState<string[]>([]); // State for water schedule checkboxes
   const { selectedPlantId } = useSelector((state: RootState) => state.nurseryPlant);
-  const [nurseryPlantDescription, setNurseryPlantDescription] = useState('')
+  const [nurseryPlantDescription, setNurseryPlantDescription] = useState('');
+  
+  // New states for meta fields
+  const [metaTitle, setMetaTitle] = useState('');
+  const [metaDescription, setMetaDescription] = useState('');
+  const [metaKeywords, setMetaKeywords] = useState('');
+  const [metaH1, setMetaH1] = useState('');
+
   useEffect(() => {
     plantApi.getPlantTypes()
       .then(response => {
@@ -62,6 +68,10 @@ const CreatePlantForm: React.FC<CreatePlantFormProps> = ({ onSuccess, plantDetai
         waterSchedule: plantDetails.waterSchedule || [],
         lightEfficient: plantDetails.lightEfficient || [],
         description: plantDetails.description,
+        metaTitle: plantDetails.metaTitle || '',  // Set meta title if present
+        metaDescription: plantDetails.metaDescription || '', // Set meta description if present
+        metaKeywords: plantDetails.metaKeywords || '', // Set meta keywords if present
+        metaH1: plantDetails.metaH1 || '',  // Set meta H1 if present
       });
       setFileList(plantDetails.images);
       setNurseryPlantDescription(plantDetails.description || ''); // Set water schedule if present
@@ -73,14 +83,22 @@ const CreatePlantForm: React.FC<CreatePlantFormProps> = ({ onSuccess, plantDetai
       setWaterSchedule(plantDetails.waterSchedule || []); // Set water schedule if present
       setLightEfficient(plantDetails.lightEfficient || []); // Set water schedule if present
     } else {
-      form.resetFields()
+      form.resetFields();
     }
   }, [plantDetails, form]);
+
   const handleFinish = async (values: any) => {
     setIsLoading(true);
     try {
       const formData = new FormData();
       formData.append('plantName', values.plantName);
+
+      // Add meta fields to form data
+      formData.append('metaTitle', values.metaTitle || metaTitle);
+      formData.append('metaDescription', values.metaDescription || metaDescription);
+      formData.append('metaKeywords', values.metaKeywords || metaKeywords);
+      formData.append('metaH1', values.metaH1 || metaH1);
+
       if (nursery && plantDetails) {
         plantDetails.plantTypeIds.forEach((plantType: any) => {
           formData.append('plantTypeIds', plantType._id);
@@ -89,10 +107,8 @@ const CreatePlantForm: React.FC<CreatePlantFormProps> = ({ onSuccess, plantDetai
           formData.append('zodiacSigns', zodiacSign)
         );
         formData.append('about', plantDetails.about);
-
       } else if (!nursery) {
         formData.append('about', values.about);
-
         values.plantTypeIds?.forEach((plantTypeId: any) => {
           formData.append('plantTypeIds', plantTypeId);
         });
@@ -100,6 +116,7 @@ const CreatePlantForm: React.FC<CreatePlantFormProps> = ({ onSuccess, plantDetai
           formData.append('zodiacSigns', zodiacSign)
         );
       }
+      
       formData.append('plantBenefits', JSON.stringify(customBenefits || []));
       formData.append('plantCareTips', JSON.stringify(customCareTips || []));
       formData.append('faqs', JSON.stringify(faqs || []));
@@ -107,6 +124,7 @@ const CreatePlantForm: React.FC<CreatePlantFormProps> = ({ onSuccess, plantDetai
       fileList?.forEach((file) => {
         formData.append('images', file.originFileObj);
       });
+
       if (maintenanceType) {
         formData.append('maintenanceType', maintenanceType); // Append maintenance type to form data
       }
@@ -117,7 +135,7 @@ const CreatePlantForm: React.FC<CreatePlantFormProps> = ({ onSuccess, plantDetai
         formData.append('lightEfficient', JSON.stringify(lightEfficient)); // Append water schedule to form data
       }
       if (productTypeId) {
-        formData.append('productTypeId', productTypeId)
+        formData.append('productTypeId', productTypeId);
       }
 
       let response;
@@ -134,11 +152,9 @@ const CreatePlantForm: React.FC<CreatePlantFormProps> = ({ onSuccess, plantDetai
             }
             if (nursery.isAdd) {
               response = await nurseryPlantApi.createNurseryPlant(nursery.id, formData);
-              console.log(response)
-              message.success('Plant details saved')
+              message.success('Plant details saved');
             } else {
               response = await nurseryPlantApi.updateNurseryPlant(nursery.id, formData, nursery.plantId);
-              console.log('Here...')
             }
           }
         } catch (error: any) {
@@ -154,7 +170,6 @@ const CreatePlantForm: React.FC<CreatePlantFormProps> = ({ onSuccess, plantDetai
         if (!nursery) {
           try {
             const response = await plantApi.createAdminPlant(formData);
-            console.log('Plant created successfully:', response.data);
             onSuccess && await onSuccess();
             message.success('Plant added to your inventory');
           } catch (error: any) {
@@ -167,8 +182,7 @@ const CreatePlantForm: React.FC<CreatePlantFormProps> = ({ onSuccess, plantDetai
           }
         } else {
           response = await nurseryPlantApi.createNurseryPlant(nursery.id, formData);
-          console.log(response)
-          message.success('Plant details saved')
+          message.success('Plant details saved');
         }
       }
       response?.data && onSuccess && await onSuccess(response?.data);
@@ -191,21 +205,9 @@ const CreatePlantForm: React.FC<CreatePlantFormProps> = ({ onSuccess, plantDetai
       <Row gutter={16}>
         <Col xs={24}>
           <Form.Item
-            id='plant-name-field'
-            label={
-              <span>
-                {nursery ? 'Plant Title (visible on website)' : 'Plant Name'}{" "}
-                <Tooltip
-                  overlayClassName="custom-tooltip"
-                  title="This name would be visible on users search list, you can add some descriptive title. For e.g., Snake plant|keep you home cool| 24 inch"
-                  placement="right"
-                >
-                  <InfoCircleOutlined />
-                </Tooltip>
-              </span>
-            }
+            label={nursery ? 'Plant Title (visible on website)' : 'Plant Name'}
             name="plantName"
-            rules={[{ required: true, message: "Please enter the product title" }, { max: 100, message: 'Maximum 100 characters allowed' }]}
+            rules={[{ required: true, message: 'Please enter the product title' }, { max: 100, message: 'Maximum 100 characters allowed' }]}
           >
             <Input placeholder="Enter plant name" />
           </Form.Item>
@@ -214,90 +216,99 @@ const CreatePlantForm: React.FC<CreatePlantFormProps> = ({ onSuccess, plantDetai
           <PlantTypes plantTypes={plantTypes} />
         </Col>}
       </Row>
-      <>
-        {nursery &&
-          <PlantAbout about={nurseryPlantDescription} setAbout={setNurseryPlantDescription} label='Any important information(Optional)' name='description' />
-        }
 
-        {!nursery && <>
-          <PlantAbout required about={about} setAbout={setAbout} label="About this product" name='about' />
-          <PlantBenefits setCustomBenefits={setCustomBenefits} customBenefits={customBenefits} />
-          <Row gutter={16}>
-            <PlantCareTips customCareTips={customCareTips} setCustomCareTips={setCustomCareTips} />
-            <Col span={24}>
-              <PlantZodiacSigns />
-            </Col>
-            <Col xs={24}>
-              <PlantFAQ faqs={faqs} setFaqs={setFaqs} />
-            </Col>
-          </Row>
-          <Row gutter={16}>
-            <Col span={24}>
-              <Form.Item label="Maintenance Type" name="maintenanceType">
-                <Radio.Group onChange={(e) => setMaintenanceType(e.target.value)} value={maintenanceType}>
-                  <Radio value="High">High</Radio>
-                  <Radio value="Low">Low</Radio>
-                  <Radio value="Medium">Medium</Radio>
-                </Radio.Group>
-              </Form.Item>
-            </Col>
-            <Col span={24}>
-              <Form.Item
-                label="Water Schedule"
-                name="waterSchedule"
-                rules={[
-                  {
-                    required: true,
-                    message: 'Please select at least one water schedule option',
-                    validator: (_, value) =>
-                      value && value.length > 0 ? Promise.resolve() : Promise.reject(new Error('Please select at least one water schedule option')),
-                  },
-                ]}
-              >
-                <Checkbox.Group onChange={(checkedValues) => setWaterSchedule(checkedValues)} value={waterSchedule}>
-                  <Checkbox value="Every alternate day">Every alternate day</Checkbox>
-                  <Checkbox value="Once a day">Once a day</Checkbox>
-                  <Checkbox value="Once a week">Once a week</Checkbox>
-                  <Checkbox value="Once in Two Weeks">Once in Two Weeks</Checkbox>
-                  <Checkbox value="Twice a week">Twice a week</Checkbox>
-                  <Checkbox value="Water Once a Week">Water Once a Week</Checkbox>
-                </Checkbox.Group>
-              </Form.Item>
-            </Col>
-            <Col span={24}>
-              <Form.Item
-                label="Light Efficient"
-                name="lightEfficient"
-                rules={[
-                  {
-                    required: true,
-                    message: 'Please select at least one light efficiency option',
-                    validator: (_, value) =>
-                      value && value.length > 0 ? Promise.resolve() : Promise.reject(new Error('Please select at least one light efficiency option')),
-                  },
-                ]}
-              >
-                <Checkbox.Group onChange={(checkedValues) => setLightEfficient(checkedValues)} value={lightEfficient}>
-                  <Checkbox value="Bright Indirect Light">Bright Indirect Light</Checkbox>
-                  <Checkbox value="Direct Sunlight">Direct Sunlight</Checkbox>
-                  <Checkbox value="Low Light">Low Light</Checkbox>
-                  <Checkbox value="Needs Medium to Low Light">Needs Medium to Low Light</Checkbox>
-                  <Checkbox value="Needs Partial to Indirect Light">Needs Partial to Indirect Light</Checkbox>
-                </Checkbox.Group>
-              </Form.Item>
-            </Col>
-          </Row>
-        </>}
-      </>
+      {nursery && 
+        <PlantAbout about={nurseryPlantDescription} setAbout={setNurseryPlantDescription} label="Any important information (Optional)" name="description" />
+      }
 
-      <Col xs={24} sm={{ span: 12, offset: 8 }} className='bottom-btn-center'>
+      {!nursery && <>
+        <PlantAbout required about={about} setAbout={setAbout} label="About this product" name="about" />
+        <PlantBenefits setCustomBenefits={setCustomBenefits} customBenefits={customBenefits} />
+        <Row gutter={16}>
+          <PlantCareTips customCareTips={customCareTips} setCustomCareTips={setCustomCareTips} />
+          <Col span={24}>
+            <PlantZodiacSigns />
+          </Col>
+          <Col xs={24}>
+            <PlantFAQ faqs={faqs} setFaqs={setFaqs} />
+          </Col>
+        </Row>
+
+        <Row gutter={16}>
+          <Col span={24}>
+            <Form.Item label="Maintenance Type" name="maintenanceType">
+              <Radio.Group onChange={(e) => setMaintenanceType(e.target.value)} value={maintenanceType}>
+                <Radio value="High">High</Radio>
+                <Radio value="Low">Low</Radio>
+                <Radio value="Medium">Medium</Radio>
+              </Radio.Group>
+            </Form.Item>
+          </Col>
+          <Col span={24}>
+            <Form.Item
+              label="Water Schedule"
+              name="waterSchedule"
+              rules={[{ required: true, message: 'Please select at least one water schedule option' }]}
+            >
+              <Checkbox.Group onChange={(checkedValues) => setWaterSchedule(checkedValues)} value={waterSchedule}>
+                <Checkbox value="Every alternate day">Every alternate day</Checkbox>
+                <Checkbox value="Once a day">Once a day</Checkbox>
+                <Checkbox value="Once a week">Once a week</Checkbox>
+                <Checkbox value="Once in Two Weeks">Once in Two Weeks</Checkbox>
+                <Checkbox value="Twice a week">Twice a week</Checkbox>
+                <Checkbox value="Water Once a Week">Water Once a Week</Checkbox>
+              </Checkbox.Group>
+            </Form.Item>
+          </Col>
+          <Col span={24}>
+            <Form.Item
+              label="Light Efficient"
+              name="lightEfficient"
+              rules={[{ required: true, message: 'Please select at least one light efficiency option' }]}
+            >
+              <Checkbox.Group onChange={(checkedValues) => setLightEfficient(checkedValues)} value={lightEfficient}>
+                <Checkbox value="Bright Indirect Light">Bright Indirect Light</Checkbox>
+                <Checkbox value="Direct Sunlight">Direct Sunlight</Checkbox>
+                <Checkbox value="Low Light">Low Light</Checkbox>
+                <Checkbox value="Needs Medium to Low Light">Needs Medium to Low Light</Checkbox>
+                <Checkbox value="Needs Partial to Indirect Light">Needs Partial to Indirect Light</Checkbox>
+              </Checkbox.Group>
+            </Form.Item>
+          </Col>
+        </Row>
+      </>}
+
+      {/* Meta Fields */}
+      <Row gutter={16}>
+        <Col xs={24}>
+          <Form.Item label="Meta Title" name="metaTitle">
+            <Input placeholder="Enter meta title" />
+          </Form.Item>
+        </Col>
+        <Col xs={24}>
+          <Form.Item label="Meta Description" name="metaDescription">
+            <Input.TextArea placeholder="Enter meta description" />
+          </Form.Item>
+        </Col>
+        <Col xs={24}>
+          <Form.Item label="Meta Keywords" name="metaKeywords">
+            <Input placeholder="Enter meta keywords" />
+          </Form.Item>
+        </Col>
+        <Col xs={24}>
+          <Form.Item label="Meta H1 Tag" name="metaH1">
+            <Input placeholder="Enter meta H1 tag" />
+          </Form.Item>
+        </Col>
+      </Row>
+
+      <Col xs={24} sm={{ span: 12, offset: 8 }} className="bottom-btn-center">
         <Form.Item>
           <Button type="primary" htmlType="submit" loading={isLoading} disabled={isLoading}>
             {nursery ? 'Save & Next' : 'Save'}
           </Button>
         </Form.Item>
       </Col>
-
     </Form>
   );
 };

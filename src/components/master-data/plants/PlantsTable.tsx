@@ -1,4 +1,5 @@
-import { Button, Space, Table, Tag } from 'antd';
+//PlantTable.tsx 
+import { Button, Modal, Select, Space, Table, Tag, Tooltip } from 'antd';
 import React, { useCallback, useEffect, useState } from 'react';
 import { nurseryPlantApi } from '../../../services/apis/nurseryPlantApi';
 import { EditTwoTone } from '@ant-design/icons';
@@ -9,6 +10,7 @@ import { AdminPlantTye } from '../../../types';
 import { addMargin, capitalizeFirstLetter } from '../../../utils/util';
 import ApplyOfferModal from './ApplyOfferModal';
 import PlantFilters from './PlantFilters';
+import { useLoader } from '../../../context/LoaderContext';
 
 interface PlantProps {
     plants: any[];
@@ -25,7 +27,11 @@ const PlantsTable: React.FC<PlantProps> = ({ plants, isFetching, setIsFetching, 
     const [showFilters, setShowFilters] = useState(false);
     const [pageSize, setPageSize] = useState(10);
     const [currentPage, setCurrentPage] = useState(1);
+    const [statusModal, setStatusModal] = useState(false);
+    const [selectedStatus, setSelectedStatus] = useState('active');
+    const [selectedRecord, setSelectedRecord] = useState<any>(null);
     const navigate = useNavigate()
+    const { startLoader, stopLoader } = useLoader();
 
     const handlePageChange = (page: number, pageSize?: number) => {
         setCurrentPage(page);
@@ -36,6 +42,37 @@ const PlantsTable: React.FC<PlantProps> = ({ plants, isFetching, setIsFetching, 
         dispatch(setCurrentStep(0))
         navigate(`/products/add-product?plantId=${record._id}`);
     }
+
+    const updateItemsPerPage = (itemsPerPage: number) => {
+        setPageSize(itemsPerPage);
+        handleFetchMorePlantsChange(1, itemsPerPage, '', 'active');
+    }
+
+    const handleStatusEdit = (record: any) => {
+        setSelectedRecord(record);
+        setSelectedStatus(record.status === 'active' ? 'inactive' : 'active');
+        setStatusModal(true);
+    };
+
+    const handleStatusUpdate = async () => {
+        if (selectedRecord) {
+            try {
+                startLoader();
+                await nurseryPlantApi.updateNurseryPlantStatus(
+                    selectedRecord.nursery._id,
+                    { status: selectedStatus },
+                    selectedRecord._id
+                );
+                setStatusModal(false);
+                handleFetchMorePlantsChange(currentPage, pageSize || 10, '', 'active');
+            } catch (error) {
+                console.error('Error updating status:', error);
+            } finally {
+                stopLoader();
+            }
+        }
+    };
+
     const columns = [
 
         {
@@ -237,11 +274,16 @@ const PlantsTable: React.FC<PlantProps> = ({ plants, isFetching, setIsFetching, 
             title: 'Status',
             dataIndex: 'status',
             key: 'status',
-            render: (text: any) => {
-                return <>
-                    <Tag color={`${text === 'draft' ? 'orange' : 'success'}`}>{capitalizeFirstLetter(text)}</Tag>
-                </>
-            }
+            render: (text: any, record: any) => (
+                <Tooltip title="Click to edit status">
+                    <span style={{ cursor: 'pointer' }} onClick={() => handleStatusEdit(record)}>
+                        <Tag color={text === 'inactive' ? 'red' : 'green'}>
+                            {capitalizeFirstLetter(text)}
+                        </Tag>
+                        <EditTwoTone style={{ marginLeft: 8 }} />
+                    </span>
+                </Tooltip>
+            ),
         },
         {
             title: 'Actions',
@@ -277,16 +319,35 @@ const PlantsTable: React.FC<PlantProps> = ({ plants, isFetching, setIsFetching, 
             {showFilters && (
                 <PlantFilters plants={filteredPlants} onApplyFilters={handleApplyFilters} />
             )} */}
+            <Select
+                placeholder="Items per page"
+                style={{ width: 200, marginBottom: 10 }}
+                onChange={(value) => updateItemsPerPage(value)}
+                value={pageSize}
+                className="status-filter-dropdown"
+            >
+                {
+                    [10, 20, 50, 100,].map((size) => <Select.Option key={size} value={size}>{size}</Select.Option >)
+                }
+            </Select>
+
             <Table dataSource={plants} columns={columns} loading={isFetching}
                 pagination={{
                     current: currentPage,
                     pageSize: pageSize,
-                    total: totalPlants,
+                    total: totalPlants * pageSize,
                     onChange: handlePageChange,
                 }} />
             {applyOffer && <ApplyOfferModal detail={applyOffer as AdminPlantTye} isOpen={!!applyOffer} onCancel={() => {
                 setApplyOffer(false)
             }} />}
+
+            <Modal title="Update Status" open={statusModal} onOk={handleStatusUpdate} onCancel={() => setStatusModal(false)}>
+                <Select value={selectedStatus} onChange={setSelectedStatus} style={{ width: '100%' }}>
+                    <Select.Option value="active">Active</Select.Option>
+                    <Select.Option value="inactive">Inactive</Select.Option>
+                </Select>
+            </Modal>
         </div>
     );
 };

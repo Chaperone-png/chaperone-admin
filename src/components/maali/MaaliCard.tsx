@@ -8,6 +8,7 @@ const MaaliCard: React.FC<{
     onEdit: (maali: any) => void;
     onDelete: (maali: any) => void;
 }> = ({ maali, onShowDetails, onEdit, onDelete }) => {
+    console.log({maali})
     return (
         <Card
             title={`${maali.firstName} ${maali.middleName || ''} ${maali.lastName}`}

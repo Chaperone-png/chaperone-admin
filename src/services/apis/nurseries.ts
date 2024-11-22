@@ -21,7 +21,11 @@ const getNurseryById = (nurseryId:string) => {
     return adminAxiosInstance.get(`/nurseries/${nurseryId}/`);
 };
 
+const deleteNursery = (nurseryId:string) => {
+    return adminAxiosInstance.delete(`/delete-nurserie/${nurseryId}/`);
+};
+
 export const nurseryApi = {
-    addNursery, editNursery, getNurseries, getNurseryById
+    addNursery, editNursery, getNurseries, getNurseryById, deleteNursery
 }
 // Add more nurseries-related API functions as needed

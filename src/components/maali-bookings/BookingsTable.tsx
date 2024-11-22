@@ -18,6 +18,8 @@ interface Booking {
     gst: number;
     total: number;
     addressId: string;
+    orderId: string;
+    paymentId: string;
 }
 
 interface BookingTableProps {
@@ -142,10 +144,23 @@ const BookingTable: React.FC<BookingTableProps> = ({ data, onShowDetails, onEdit
             },
         },
         {
+            title: 'Payment Status',
+            key: 'paymentStatus',
+            render: (_: any, record: Booking) => {
+                let paymentStatus = record?.orderId && record?.paymentId ? 'Paid' : 'Unpaid';
+                let color = paymentStatus === 'Paid' ? 'green' : 'orange';
+                return <Tag color={color}>{paymentStatus}</Tag>;
+            },
+        },
+        {
             title: 'Total (Rs.)',
             dataIndex: 'total',
             key: 'total',
-            render: (text: number) => `${text.toFixed(2)}`,
+            render: (text: number, record: Booking) => {
+                const gstValue = record.subtotal * 0.18;
+                const total = record.subtotal + gstValue; // Calculate total as subtotal + GST
+                return `${Math.round(total)}`;
+            },
         },
         {
             title: 'Actions',

@@ -183,6 +183,11 @@ export type AdminPlantTye = {
     _id: string;
     title: string;
   };
+  productType: {
+    title: string;
+    status: string;
+    _id: string;
+  };
   description: string;
   maintenanceType: string;
   waterSchedule: string[];
@@ -238,6 +243,10 @@ export type AdminPlantTye = {
   totalBuyers: number;
   __v: number;
   containerMaterial: string;
+  metaTitle: string;
+  metaDescription: string;
+  metaH1: string;
+  metaKeywords: string;
 };
 export type MaaliType = {
   _id: string;
@@ -280,7 +289,7 @@ export type ContainerType =
   (typeof CONTAINER_TYPES)[keyof typeof CONTAINER_TYPES];
 
 export type orderStatusTypes = {
-  pending : 'Processing',
+  pending: 'Processing',
   completed: 'Delivered',
   cancelled: 'Cancel In Progress',
   returned: 'Returned Initiated',
