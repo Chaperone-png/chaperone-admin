@@ -440,19 +440,27 @@ const PlantsTable: React.FC<PlantProps> = ({
             {showFilters && (
                 <PlantFilters plants={filteredPlants} onApplyFilters={handleApplyFilters} />
             )} */}
-      <Select
-        placeholder="Items per page"
-        style={{ width: 200, marginBottom: 10 }}
-        onChange={(value) => updateItemsPerPage(value)}
-        value={pageSize}
-        className="status-filter-dropdown"
-      >
-        {[10, 20, 50, 100].map((size) => (
-          <Select.Option key={size} value={size}>
-            {size}
-          </Select.Option>
-        ))}
-      </Select>
+          <div className='search-filter'>
+                <Select
+                    placeholder="Items per page"
+                    style={{ width: 80, marginBottom: 10 }}
+                    onChange={(value) => updateItemsPerPage(value)}
+                    value={pageSize}
+                    className="status-filter-dropdown"
+                >
+                    {
+                        [10, 20, 50, 100,].map((size) => <Select.Option key={size} value={size}>{size}</Select.Option >)
+                    }
+                </Select>
+                <Input.Search
+                    placeholder="Search maalis by name, location, email, contact, etc."
+                    allowClear
+                    className='search-bar'
+                    // onChange={handleSearch}
+                    style={{ marginBottom: 10 }}
+                />
+                <Button><FunnelPlotOutlined /></Button>
+            </div>
 
       <Table
         dataSource={plants}
