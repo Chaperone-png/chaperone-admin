@@ -1,8 +1,8 @@
 //PlantTable.tsx 
-import { Button, Modal, Select, Space, Table, Tag, Tooltip } from 'antd';
+import { Button, Input, Modal, Select, Space, Table, Tag, Tooltip } from 'antd';
 import React, { useCallback, useEffect, useState } from 'react';
 import { nurseryPlantApi } from '../../../services/apis/nurseryPlantApi';
-import { EditTwoTone } from '@ant-design/icons';
+import { EditTwoTone, FunnelPlotOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { setCurrentStep } from '../../../redux/nurseryPlantSlice';
@@ -319,17 +319,27 @@ const PlantsTable: React.FC<PlantProps> = ({ plants, isFetching, setIsFetching, 
             {showFilters && (
                 <PlantFilters plants={filteredPlants} onApplyFilters={handleApplyFilters} />
             )} */}
-            <Select
-                placeholder="Items per page"
-                style={{ width: 200, marginBottom: 10 }}
-                onChange={(value) => updateItemsPerPage(value)}
-                value={pageSize}
-                className="status-filter-dropdown"
-            >
-                {
-                    [10, 20, 50, 100,].map((size) => <Select.Option key={size} value={size}>{size}</Select.Option >)
-                }
-            </Select>
+          <div className='search-filter'>
+                <Select
+                    placeholder="Items per page"
+                    style={{ width: 80, marginBottom: 10 }}
+                    onChange={(value) => updateItemsPerPage(value)}
+                    value={pageSize}
+                    className="status-filter-dropdown"
+                >
+                    {
+                        [10, 20, 50, 100,].map((size) => <Select.Option key={size} value={size}>{size}</Select.Option >)
+                    }
+                </Select>
+                <Input.Search
+                    placeholder="Search maalis by name, location, email, contact, etc."
+                    allowClear
+                    className='search-bar'
+                    // onChange={handleSearch}
+                    style={{ marginBottom: 10 }}
+                />
+                <Button><FunnelPlotOutlined /></Button>
+            </div>
 
             <Table dataSource={plants} columns={columns} loading={isFetching}
                 pagination={{
