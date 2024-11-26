@@ -72,7 +72,7 @@ const Products: React.FC = () => {
 
   useEffect(() => {
     fetchNurseriesPlants(1, 10, searchString, "active", sortBy);
-  }, [reload, searchString,sortBy]);
+  }, [reload, searchString, sortBy]);
 
   const handleAddProduct = () => {
     dispatch(resetCreateNurseryData());
@@ -91,39 +91,40 @@ const Products: React.FC = () => {
     page: number,
     pageSize: number,
     searchQuery: string,
-    statusFilter: string
+    statusFilter: string,
+    sortBy: number
   ) => {
     fetchNurseriesPlants(page, pageSize, searchQuery, statusFilter, sortBy);
   };
-  
 
   const handleSearch = (value: string) => {
     setSearchString(value);
-  }
+  };
 
   const toggleSortBy = () => {
-    if(sortBy === 0){
+    if (sortBy === 0) {
       setSortBy(1);
-    }
-    else{
+    } else {
       setSortBy(0);
     }
-  }
+  };
 
   return (
     <div>
       <CustomPageHeader title="Products" />
       {/* add the search filter here */}
       <div className="search-container">
-      <Input.Search
-                    placeholder="Search maalis by name, location, email, contact, etc."
-                    allowClear
-                    className='search-bar'
-                    onChange={(e) => handleSearch(e.target.value)}
-                    value={searchString}
-                    style={{ marginBottom: 10 }}
-                />
-                <Button onClick={() =>toggleSortBy()}><FunnelPlotOutlined /></Button>
+        <Input.Search
+          placeholder="Search maalis by name, location, email, contact, etc."
+          allowClear
+          className="search-bar"
+          onChange={(e) => handleSearch(e.target.value)}
+          value={searchString}
+          style={{ marginBottom: 10 }}
+        />
+        <Button onClick={() => toggleSortBy()}>
+          <FunnelPlotOutlined />
+        </Button>
       </div>
       <div className="action-buttons">
         <Button htmlType="button" onClick={handleOpenDealModal}>
@@ -143,8 +144,9 @@ const Products: React.FC = () => {
             setFilteredPlants={setFilteredPlants}
             handleFetchMorePlantsChange={handlePageChange}
             totalPlants={totalPlants}
+            SortBy={sortBy}
             searchString={searchString}
-            setSearchString={setSearchString}
+            setReload={setReload}
           />
         </TabPane>
         <TabPane tab="Pots/Planters" key="2">

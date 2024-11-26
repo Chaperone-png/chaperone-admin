@@ -7,19 +7,25 @@ import "./Orders.scss";
 import { orderApi } from "../../services/apis/orderApi";
 import { toast } from "react-toastify";
 import CustomPageHeader from "../PageHeader";
-import { orderStatusTypesData, orderTabTypes, statusColorConstants } from "../../utils/constants";
+import {
+  orderStatusTypesData,
+  orderTabTypes,
+  statusColorConstants,
+} from "../../utils/constants";
 import { useLoader } from "../../context/LoaderContext";
 import { EditTwoTone } from "@ant-design/icons";
 
-interface Props{
+interface Props {
   type: any;
 }
-const Orders: React.FC <Props> = ({ type}) => {
+const Orders: React.FC<Props> = ({ type }) => {
   const [allOrders, setAllOrders] = useState<any[]>([]);
   const [selectiveOrders, setSelectiveOrders] = useState<any[]>([]);
   const [currentTab, setCurrentTab] = useState<string>("all");
   const [selectedOrder, setSelectedOrder] = useState<any>(null);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
+  const [pageSize, setPageSize] = useState(10);
+  const [currentPage, setCurrentPage] = useState(1);
   const [editStatusModalOpen, setEditStatusModalOpen] =
     useState<boolean>(false);
   const [orderStatus, setOrderStatus] = useState<string>("");
@@ -39,23 +45,19 @@ const Orders: React.FC <Props> = ({ type}) => {
     } catch (err) {
       console.error("Error while loading all orders", err);
       setAllOrders([]); // Set an empty array in case of error
-    }
-    finally {
+    } finally {
       stopLoader();
     }
   };
 
   useEffect(() => {
     fetchAllOrders();
-    }, []);
+  }, []);
 
-    useEffect(() => {
-    if(type)
-      setCurrentTab(type);
-    else
-    setCurrentTab('all');
-    },[type])
-
+  useEffect(() => {
+    if (type) setCurrentTab(type);
+    else setCurrentTab("all");
+  }, [type]);
 
   useEffect(() => {
     let filteredOrders = [];
@@ -72,9 +74,9 @@ const Orders: React.FC <Props> = ({ type}) => {
     filteredOrders =
       Array.isArray(filteredOrders) && filteredOrders.length > 0
         ? filteredOrders.sort(
-          (a, b) =>
-            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-        )
+            (a, b) =>
+              new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          )
         : [];
 
     setSelectiveOrders(filteredOrders);
@@ -124,7 +126,8 @@ const Orders: React.FC <Props> = ({ type}) => {
       dataIndex: "user",
       render: (user: any) => (
         <span>
-          {user?.address?.mobileNumber} - {user?.address?.street}, {user?.address?.city}, {user?.address?.state}
+          {user?.address?.mobileNumber} - {user?.address?.street},{" "}
+          {user?.address?.city}, {user?.address?.state}
         </span>
       ),
       width: "20%",
@@ -153,7 +156,10 @@ const Orders: React.FC <Props> = ({ type}) => {
       render: (_: any, order: any) => (
         <div className="deliveryStatusAction">
           <span>{renderDeliveryStatusChip(order?.deliveryStatus)}</span>
-          <Button className="editButton" onClick={() => handleEditStatus(order)}>
+          <Button
+            className="editButton"
+            onClick={() => handleEditStatus(order)}
+          >
             <EditTwoTone />
           </Button>
         </div>
@@ -187,7 +193,9 @@ const Orders: React.FC <Props> = ({ type}) => {
       </Tag>
     );
   };
-  const renderDeliveryStatusChip = (deliveryStatus: keyof typeof orderStatusTypesData) => {
+  const renderDeliveryStatusChip = (
+    deliveryStatus: keyof typeof orderStatusTypesData
+  ) => {
     const data = orderStatusTypesData[deliveryStatus];
     const color = data?.color;
 
@@ -220,8 +228,7 @@ const Orders: React.FC <Props> = ({ type}) => {
         "got error while udpating the delivery status please try again."
       );
       console.log("got error while udpating the delivery status", err);
-    }
-    finally {
+    } finally {
       stopLoader();
     }
   };
@@ -230,17 +237,23 @@ const Orders: React.FC <Props> = ({ type}) => {
     setCurrentTab(key);
   };
 
+  const handlePageChange = (page: number, pageSize?: number) => {
+    setCurrentPage(page);
+  };
+
   return (
     <div className="orders-container">
       <CustomPageHeader title="Orders" />
 
       <Tabs activeKey={currentTab} onChange={onTabChange}>
         {orderTabTypes.map((tab, index) => {
-          return <Tabs.TabPane
-            id={tab.id}
-            tab={<span className="tab-completed">{tab.title}</span>}
-            key={tab.value}
-          />
+          return (
+            <Tabs.TabPane
+              id={tab.id}
+              tab={<span className="tab-completed">{tab.title}</span>}
+              key={tab.value}
+            />
+          );
         })}
       </Tabs>
 
@@ -249,7 +262,12 @@ const Orders: React.FC <Props> = ({ type}) => {
         dataSource={selectiveOrders}
         rowKey="orderId"
         className="orderBigTbl"
-        pagination={false}
+        pagination={{
+          current: currentPage,
+          pageSize: pageSize,
+          total: selectiveOrders.length * pageSize,
+          onChange: handlePageChange,
+        }}
         scroll={{ y: 600 }}
         onRow={(record) => ({
           onClick: () => handleRowClick(record),
