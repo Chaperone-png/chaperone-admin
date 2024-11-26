@@ -15,13 +15,14 @@ const updateNurseryPlantStatus = (nurseryId: string, plantData: any, selectedPla
   });
 };
 
-const getNurseriesPlants = (page: number, pageSize: number, searchQuery: string, statusFilter: string) => {
+const getNurseriesPlants = (page: number, pageSize: number, searchQuery: string, statusFilter: string, sortBy: number) => {
   return adminAxiosInstance.get("/master-data/nurseries/nursery-plants/", {
     params: {
       currentPage: page,
       itemsPerPage: pageSize,
       searchQuery,
-      statusFilter
+      statusFilter,
+      sortBy
     }
   });
 };
