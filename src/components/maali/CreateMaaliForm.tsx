@@ -366,7 +366,6 @@ const CreateMaaliForm = ({ maali, updateMaalis, onCancel }: { maali?: MaaliType 
                             <Form.Item
                                 name="email"
                                 label="Email"
-                                rules={[{ required: true, type: 'email', message: 'Please enter a valid email' }]}
                             >
                                 <Input placeholder="Email" />
                             </Form.Item>
