@@ -1,8 +1,8 @@
 //PlantTable.tsx
-import { Button, Modal, Select, Space, Table, Tag, Tooltip } from "antd";
+import { Button, Modal, Select, Space, Table, Tag, Input, Tooltip } from "antd";
 import React, { useCallback, useEffect, useState } from "react";
 import { nurseryPlantApi } from "../../../services/apis/nurseryPlantApi";
-import { DeleteOutlined, EditTwoTone } from "@ant-design/icons";
+import { DeleteOutlined, EditTwoTone, FunnelPlotOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setCurrentStep } from "../../../redux/nurseryPlantSlice";
