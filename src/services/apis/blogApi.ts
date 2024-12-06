@@ -20,6 +20,16 @@ const getBlogById = (blogId: string) => {
   return adminAxiosInstance.get(`/blogs/${blogId}/`);
 };
 
+const uploadBlogImages = (formData: any) => {
+  return adminAxiosInstance.post(`/blog/upload-linked-blogImage`, formData,
+    {
+      headers:{
+        'Content-Type': 'multipart/form-data'
+      }
+    }
+  );
+};
+
 // Delete a blog post by ID
 const deleteBlog = (blogId: string) => {
   return adminAxiosInstance.delete(`/blogs/${blogId}/`);
@@ -31,4 +41,5 @@ export const blogApi = {
   getBlogs,
   getBlogById,
   deleteBlog,
+  uploadBlogImages
 };
