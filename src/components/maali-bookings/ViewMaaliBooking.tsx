@@ -109,13 +109,13 @@ const ViewMaaliBooking = ({ isOpen, bookingDetails, onCancel }: Props) => {
                         <tr>
                             <th>Address</th>
                             <td>
-                                House No. - {bookingDetails.addressId?.houseNo} <br />
+                                {/* House No. - {bookingDetails.addressId?.houseNo} <br /> */}
                                 Area - {bookingDetails.addressId?.area} <br />
                                 City - {bookingDetails.addressId?.city} <br />
                                 State - {bookingDetails.addressId?.state} <br />
                                 Pincode - {bookingDetails.addressId?.pincode} <br />
                                 Mobile Number - {bookingDetails?.addressId?.mobileNumber}  <br />
-                                Landmark - {bookingDetails.addressId?.landmark}
+                                {/* Landmark - {bookingDetails.addressId?.landmark} */}
                             </td>
                         </tr>
                         <tr>
@@ -126,14 +126,14 @@ const ViewMaaliBooking = ({ isOpen, bookingDetails, onCancel }: Props) => {
                             <th>Preferred Booking Time</th>
                             <td>{bookingDetails.prefferedTimes?.join(', ')}</td>
                         </tr>
-                        <tr>
+                        {/* <tr>
                             <th>Preferred Week Days</th>
                             <td>{bookingDetails.prefferedWeekDays?.join(', ')}</td>
                         </tr>
                         <tr>
                             <th>Rare Case Preferred Times</th>
                             <td>{bookingDetails.prefferedRareCasesTimes?.join(', ')}</td>
-                        </tr>
+                        </tr> */}
                         <tr>
                             <th>Subtotal</th>
                             <td>{bookingDetails.subtotal}</td>
