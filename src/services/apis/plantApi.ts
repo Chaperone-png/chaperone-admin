@@ -1,5 +1,5 @@
 import { adminAxiosInstance, publicAxiosInstance } from "../axiosInstance";
-import imageCompression from 'browser-image-compression';
+import imageCompression from "browser-image-compression";
 // Function to get all plant types
 const getPlantTypes = () => {
   return publicAxiosInstance.get("/plant-types/");
@@ -42,8 +42,12 @@ const updatePlant = (plantId: any, plantData: any) => {
   return adminAxiosInstance.put(`/master-data/plants/${plantId}/`, plantData);
 };
 
-const getAdminPlants = () => {
-  return adminAxiosInstance.get("/master-data/plants/");
+const getAdminPlants = (queryString: string) => {
+  return adminAxiosInstance.get("/master-data/plants/", {
+    params: {
+      queryString,
+    },
+  });
 };
 const getAdminPotPlanters = () => {
   return adminAxiosInstance.get("/master-data/plants/");
@@ -74,7 +78,7 @@ const bulkUploadPlants = (formData: any) => {
 
 const deletePlantType = (id: string) => {
   return adminAxiosInstance.delete(`/master-data/types/${id}`);
-}
+};
 
 const uploadImageToS3 = async (formData: FormData) => {
   const compressedFormData = new FormData();
@@ -98,7 +102,7 @@ const uploadImageToS3 = async (formData: FormData) => {
       "Content-Type": "multipart/form-data",
     },
   });
-}
+};
 
 export const plantApi = {
   createPlantType,
@@ -120,5 +124,5 @@ export const plantApi = {
   bulkUploadPlants,
   getAdminPotPlanters,
   uploadImageToS3,
-  deletePlantType
+  deletePlantType,
 };
