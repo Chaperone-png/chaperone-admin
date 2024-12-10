@@ -1,4 +1,3 @@
-//ViewMaaliBooking
 import { Modal } from 'antd';
 import moment from 'moment';
 import React, { useMemo } from 'react';
