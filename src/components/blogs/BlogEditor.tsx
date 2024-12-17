@@ -19,6 +19,9 @@ import "../../styles/BlogEditor.scss";
 import { blogApi } from "../../services/apis/blogApi";
 import { toast } from "react-toastify";
 import { useLoader } from "../../context/LoaderContext";
+import { ReactQuillModules } from "../../utils/constants";
+
+import Quill from "react-quill";
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -31,18 +34,36 @@ const BlogEditor: React.FC<BlogEditorProps> = ({ blogData }) => {
   const [form] = Form.useForm();
   const [content, setContent] = useState(blogData?.content || ""); // Rich text content
   const [fileList, setFileList] = useState<any[]>([]); // File list for the featured image
-  const [links, setLinks] = useState<Record<string, string>>(
-    blogData?.links || {}
-  );
-  const [images, setImages] = useState<Record<string, string>>(
-    blogData?.images || {}
-  );
+  const [links, setLinks] = useState<Record<string, string>>({});
+  const [images, setImages] = useState<Record<string, string>>({});
   const [isLinkModalVisible, setLinkModalVisible] = useState(false);
-  const [isImageModalVisible, setImageModalVisible] = useState(false);
   const [linkInput, setLinkInput] = useState({ keyword: "", url: "" });
   const [imageInput, setImageInput] = useState({ key: "", url: "" });
   const [loading, setLoading] = useState(false);
+  const [fetchedImagesData, setFetchedImagesData] = useState([]);
+  const [showSelectImageView, setShowSelectImageView] = useState(false);
+  const [selectedImageSize, setSelectedImageSize] = useState("medium");
+  const [quillInstance, setQuillInstance] = useState<any>(null);
   const quillRef = useRef<any>(null);
+
+  const modules = {
+    ...ReactQuillModules,
+    clipboard: {
+      matchVisual: false,
+    },
+  };
+
+  useEffect(() => {
+    setLinks(blogData?.links || {});
+    setImages(blogData?.images || {});
+  }, [blogData]);
+
+  useEffect(() => {
+    if (quillRef.current) {
+      const editor = quillRef.current.getEditor();
+      setQuillInstance(editor);
+    }
+  }, [quillRef.current]);
 
   const { startLoader, stopLoader } = useLoader();
   console.log({ links, images, content });
@@ -81,15 +102,7 @@ const BlogEditor: React.FC<BlogEditorProps> = ({ blogData }) => {
     setFileList([]);
   };
 
-  const handleFileChange = () => {
-      const file = fileList[0];
-      console.log({file})
-      return ''
-      const fileURL = URL.createObjectURL(file); 
-      return fileURL;
-  };
-
-  const handleLinkInsert = () => {
+  const handleLinkInsert = async () => {
     if (!linkInput.keyword || !linkInput.url) {
       notification.error({
         message: "Error",
@@ -98,83 +111,90 @@ const BlogEditor: React.FC<BlogEditorProps> = ({ blogData }) => {
       return;
     }
 
-    const linkKey = `link_${Date.now()}`;
-    setLinks((prevLinks) => ({
-      ...prevLinks,
-      [linkKey]: linkInput.url,
-    }));
+    try {
+      startLoader();
+      const response = await blogApi.getImagesFromUrl(linkInput.url);
+
+      if (response.data.success) {
+        notification.success({
+          message: "Success",
+          description: "Successfully fetched the images.",
+        });
+        const imagesData = response.data.images;
+
+        setFetchedImagesData(imagesData);
+        setShowSelectImageView(true);
+      } else {
+        notification.error({
+          message: "Error",
+          description: "Failed to fetch images for the link.",
+        });
+      }
+    } catch (error: any) {
+      console.error("Error inserting link:", error);
+      notification.error({
+        message: "Error",
+        description: error?.message || "Failed to fetch images.",
+      });
+    } finally {
+      stopLoader();
+    }
+  };
+
+  const handleImageSelect = (imageUrl: string) => {
+    if (!quillInstance) {
+      console.error("Quill editor is not initialized.");
+      return;
+    }
+
+    let sizeStyle = "";
+    let height = "";
+    let width = "";
+    switch (selectedImageSize) {
+      case "extra-small":
+        sizeStyle = "width: 50px; height: auto;";
+        height = "50px";
+        width = "50px";
+        break;
+      case "small":
+        sizeStyle = "width: 150px; height: auto;";
+        height = "150px";
+        width = "150px";
+        break;
+      case "medium":
+        sizeStyle = "width: 300px; height: auto;";
+        height = "300px";
+        width = "300px";
+        break;
+      case "large":
+        sizeStyle = "width: 500px; height: auto;";
+        height = "500px";
+        width = "500px";
+        break;
+      default:
+        sizeStyle = "width: 300px; height: auto;";
+        height = "300px";
+        width = "300px";
+        break;
+    }
+
+    const imageHtml = `
+      <a href="${linkInput.url}" target="_blank">
+        <div class="link-image" style="cursor: pointer; display: inline-block; ">
+          <img src="${imageUrl}" alt="${linkInput.keyword}" height="${height}" width="${width}" />
+        </div>
+      </a>
+    `;
 
     const editor = quillRef.current.getEditor();
     const range = editor.getSelection();
     const position = range ? range.index : editor.getLength();
 
-    editor.insertText(position, linkInput.keyword, "link", linkInput.url); // Insert link at cursor
+    editor.clipboard.dangerouslyPasteHTML(position, imageHtml);
 
     setLinkInput({ keyword: "", url: "" });
     setLinkModalVisible(false);
-  };
-
-  const handleImageInsert = () => {
-    if (!imageInput.key || !imageInput.url) {
-      notification.error({
-        message: "Error",
-        description: "Both key and image URL are required",
-      });
-      return;
-    }
-    // Generate a unique key for the image
-    const imageKey = `image_${Date.now()}`;
-    setImages((prevImages) => ({
-      ...prevImages,
-      [imageKey]: imageInput.url,
-    }));
-
-    const editor = quillRef.current.getEditor();
-    const range = editor.getSelection();
-    const position = range ? range.index : editor.getLength();
-    editor.insertEmbed(position, "image", images[imageKey]); // Insert key instead of URL
-    setImageInput({ key: "", url: "" });
-    setImageModalVisible(false);
-  };
-
-  const resetImageModal = () => {
-    setImageInput({ key: "", url: "" });
-  };
-
-  const handleImageUpload = async (file: any) => {
-    const formData = new FormData();
-    formData.append("file", file);
-
-    try {
-      startLoader();
-      const response = await blogApi.uploadBlogImages(formData);
-      if (response.data.success) {
-        const imageUrl = response.data.imageUrl;
-        setImageInput((prevInput) => ({
-          ...prevInput,
-          url: imageUrl,
-        }));
-
-        const imageKey = `image_${Date.now()}`;
-        setImages((prevImages) => ({
-          ...prevImages,
-          [imageKey]: imageUrl,
-        }));
-
-        const editor = quillRef.current.getEditor();
-        const range = editor.getSelection();
-        const position = range ? range.index : editor.getLength();
-        editor.insertEmbed(position, "image", imageUrl);
-
-        toast.success("The image has been uploaded successfully.");
-      }
-    } catch (error: any) {
-      toast.error(error?.message || "Failed to upload image.");
-    } finally {
-      stopLoader();
-      resetImageModal();
-      setImageModalVisible(false);
-    }
+    setShowSelectImageView(false);
   };
 
   const onFinish = async (values: any) => {
@@ -187,14 +207,15 @@ const BlogEditor: React.FC<BlogEditorProps> = ({ blogData }) => {
       formData.append("metaDescription", values.metaDescription);
       formData.append("metaKeywords", values.metaKeywords);
 
+      formData.append("content", content);
+
       if (values.publishDate) {
         formData.append("publishDate", values.publishDate.toISOString());
       }
 
-      formData.append("content", content);
-
-      if (!blogData?.imageUrl || fileList.length > 0)
+      if (!blogData?.imageUrl && fileList?.length > 0) {
         formData.append("file", fileList[0].file);
+      }
 
       formData.append("links", JSON.stringify(links));
       formData.append("images", JSON.stringify(images));
@@ -213,13 +234,14 @@ const BlogEditor: React.FC<BlogEditorProps> = ({ blogData }) => {
         });
       }
     } catch (error: any) {
+      console.error("got error:", error);
       notification.error({
         message: "Error",
         description: error.message || "Something went wrong!",
       });
     } finally {
       setLoading(false);
-      window.location.href = '/blogs';
+      window.location.href = "/blogs";
     }
   };
 
@@ -302,20 +324,15 @@ const BlogEditor: React.FC<BlogEditorProps> = ({ blogData }) => {
           </Col>
         </Row>
         <Form.Item label="Content" name="content">
-          <ReactQuill
-            value={renderingContent}
-            onChange={setContent}
-            ref={quillRef}
-            modules={{
-              toolbar: [
-                [{ header: "1" }, { header: "2" }, { font: [] }],
-                [{ list: "ordered" }, { list: "bullet" }],
-                ["bold", "italic", "underline"],
-                [{ align: [] }],
-                ["link", "image"],
-              ],
-            }}
-          />
+          <div className="react-quill-container">
+            <ReactQuill
+              value={renderingContent}
+              onChange={setContent}
+              ref={quillRef}
+              theme="snow"
+              modules={modules}
+            />
+          </div>
         </Form.Item>
         <Form.Item label="Featured Image">
           <Upload
@@ -339,12 +356,6 @@ const BlogEditor: React.FC<BlogEditorProps> = ({ blogData }) => {
         Insert Link
       </Button>
 
-      {/* Insert Image Button */}
-      <Button type="link" onClick={() => setImageModalVisible(true)}>
-        Insert Image
-      </Button>
-
-      {/* Link Modal */}
       <Modal
         title="Insert Link"
         visible={isLinkModalVisible}
@@ -360,52 +371,63 @@ const BlogEditor: React.FC<BlogEditorProps> = ({ blogData }) => {
         />
         <Input
           value={linkInput.url}
-          onChange={(e) => setLinkInput({ ...linkInput, url: e.target.value })}
+          onChange={(e) =>
+            setLinkInput({
+              ...linkInput,
+              url: decodeURIComponent(e.target.value),
+            })
+          }
           placeholder="Enter URL"
         />
       </Modal>
 
-      {/* Image Modal */}
+      {/* Image Selection Modal */}
       <Modal
-        title="Insert Image"
-        visible={isImageModalVisible}
-        onCancel={() => setImageModalVisible(false)}
-        footer={[
-          <Button key="cancel" onClick={() => setImageModalVisible(false)}>
-            Cancel
-          </Button>,
-          <Button
-            key="insert"
-            type="primary"
-            disabled={!imageInput.url} // Disable until an image is uploaded
-            onClick={handleImageInsert}
-          >
-            Insert Image
-          </Button>,
-        ]}
+        title="Select Image"
+        visible={showSelectImageView}
+        onCancel={() => setShowSelectImageView(false)}
+        footer={null}
       >
-        <Upload
-          name="image"
-          customRequest={({ file }) => handleImageUpload(file)} // Call handleImageUpload for the uploaded file
-          showUploadList={false}
-          accept="image/*"
-        >
-          <Button icon={<UploadOutlined />}>Upload Image</Button>
-        </Upload>
-        {imageInput.url && (
-          <div className="uploaded-image-preview">
-            <p>Preview:</p>
-            <img
-              src={imageInput.url}
-              alt="Uploaded"
-              style={{
-                width: "100%",
-                maxHeight: "200px",
-                objectFit: "contain",
-              }}
-            />
-          </div>
-        )}
+        <div className="image-selection-modal">
+          {fetchedImagesData.length > 0 ? (
+            <Select
+              value={selectedImageSize}
+              onChange={setSelectedImageSize}
+              style={{ marginBottom: "16px", width: "100%" }}
+            >
+              <Option value="extra-small">Extra Small</Option>
+              <Option value="small">Small</Option>
+              <Option value="medium">Medium</Option>
+              <Option value="large">Large</Option>
+            </Select>
+          ) : (
+            ""
+          )}
+          {fetchedImagesData.length > 0 ? (
+            <>
+              <Row gutter={16}>
+                {fetchedImagesData.map((image: any) => (
+                  <Col span={6} key={image._id}>
+                    <div
+                      className="image-item"
+                      style={{ cursor: "pointer" }}
+                      onClick={() => handleImageSelect(image.url)}
+                    >
+                      <img
+                        src={image.url}
+                        alt={image._id}
+                        style={{ maxWidth: "100%" }}
+                      />
+                      <p>{image.containerType}</p>
+                    </div>
+                  </Col>
+                ))}
+              </Row>
+            </>
+          ) : (
+            <p>No images available.</p>
+          )}
+        </div>
       </Modal>
     </div>
   );

@@ -21,13 +21,18 @@ const getBlogById = (blogId: string) => {
 };
 
 const uploadBlogImages = (formData: any) => {
-  return adminAxiosInstance.post(`/blog/upload-linked-blogImage`, formData,
-    {
-      headers:{
-        'Content-Type': 'multipart/form-data'
-      }
-    }
-  );
+  return adminAxiosInstance.post(`/blog/upload-linked-blogImage`, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+};
+
+const getImagesFromUrl = (url: any) => {
+  const payload = {
+    url,
+  };
+  return adminAxiosInstance.post(`/blog/images-from-url`, payload);
 };
 
 // Delete a blog post by ID
@@ -41,5 +46,6 @@ export const blogApi = {
   getBlogs,
   getBlogById,
   deleteBlog,
-  uploadBlogImages
+  uploadBlogImages,
+  getImagesFromUrl,
 };
