@@ -48,11 +48,12 @@ const updatePotPlanterStatus = (nurseryId: string, plantData: any, selectedPlant
 const updateNurseryImages = (nurseryId: string, selectedPlantId: any, formData: any) => {
     return adminAxiosInstance.put(`/master-data/nurseries/${nurseryId}/pot-planters/${selectedPlantId}/images/`, formData);
 };
-const getNurseriesPotsPlanters = (page: number, pageSize: number) => {
+const getNurseriesPotsPlanters = (page: number, pageSize: number, searchQuery: string) => {
     return adminAxiosInstance.get("/master-data/nurseries/pot-planters/", {
         params: {
             currentPage: page,
-            itemsPerPage: pageSize
+            itemsPerPage: pageSize,
+            searchQuery
         }
     });
 };

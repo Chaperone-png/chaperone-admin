@@ -72,9 +72,15 @@ export const AddProductForm: React.FC<{
   const fetchPlantDetails = useCallback(
     async (plantId: string) => {
       try {
-        console.log({ selectedProductTypeTitle })
+        const currentUpdationType =
+          (sessionStorage.getItem("Updation_type") as ProductCategory | "") ||
+          "";
+        sessionStorage.removeItem("Updation_type");
+        setSelectedProductTypeTitle(currentUpdationType);
 
-        if (selectedProductTypeTitle === "Plant") {
+        console.log({ selectedProductTypeTitle, plantId, currentUpdationType });
+
+        if (currentUpdationType === "Plant") {
           const response = await nurseryPlantApi.getPlantById(plantId);
           const plantDetails = response.data;
           if (plantDetails) {
@@ -82,11 +88,13 @@ export const AddProductForm: React.FC<{
             dispatch(setProductCategory(plantDetails.productType._id));
             dispatch(setCreatedPlantData(plantDetails));
           } else {
-            message.error("The product you're trying to access does not exist.");
+            message.error( 
+              "The product you're trying to access does not exist."
+            );
             resetPlantData();
             navigate("/products/add-product");
           }
-        } else if (selectedProductTypeTitle === 'Pot/Planter') {
+        } else if (currentUpdationType === "Pot/Planter") {
           const response = await potPlanterApi.getPotPlanterById(plantId);
           const plantDetails = response.data;
           console.log(plantDetails, "plant detail");
@@ -94,7 +102,9 @@ export const AddProductForm: React.FC<{
             dispatch(setNurseryId(plantDetails.nursery._id));
             dispatch(setCreatedPlantData(plantDetails));
           } else {
-            message.error("The product you're trying to access does not exist.");
+            message.error(
+              "The product you're trying to access does not exist."
+            );
             resetPlantData();
             navigate("/products/add-product");
           }
@@ -110,21 +120,22 @@ export const AddProductForm: React.FC<{
     fetchInitialData();
   }, [fetchInitialData]);
 
-  useEffect(() => {
-    //this will handle the current type according to the step 1
-    //response data
-    if (createdPlantData?.hasOwnProperty('potPlanterType') && createdPlantData?.hasOwnProperty('potPlanterShape')) {
-      setSelectedProductTypeTitle("Pot/Planter");
-    }
-    else if (createdPlantData) {
-      setSelectedProductTypeTitle("Plant");
-    }
-  }, [createdPlantData])
+  // useEffect(() => {
+  //   //this will handle the current type according to the step 1
+  //   //response data
+  //   if (
+  //     createdPlantData?.hasOwnProperty("potPlanterType") &&
+  //     createdPlantData?.hasOwnProperty("potPlanterShape")
+  //   ) {
+  //     setSelectedProductTypeTitle("Pot/Planter");
+  //   } else if (createdPlantData) {
+  //     setSelectedProductTypeTitle("Plant");
+  //   }
+  // }, [createdPlantData]);
 
   useEffect(() => {
-    const plantId = searchParams.get("plantId") || '';
+    const plantId = searchParams.get("plantId") || "";
     fetchPlantDetails(plantId);
-    // setSelectedProductTypeTitle("Plant");
   }, [fetchPlantDetails, searchParams]);
 
   useEffect(() => {
@@ -146,7 +157,7 @@ export const AddProductForm: React.FC<{
     dispatch(setNurseryId(value));
   };
 
-  console.log({ selectedProductTypeTitle })
+  console.log({ selectedProductTypeTitle });
 
   return (
     <>
@@ -244,7 +255,9 @@ export const AddProductForm: React.FC<{
       </Form>
       {selectedProductTypeTitle && (
         <>
-          {selectedProductTypeId && selectedProductTypeTitle === "Plant" && <AddNurseryPlant />}
+          {selectedProductTypeId && selectedProductTypeTitle === "Plant" && (
+            <AddNurseryPlant />
+          )}
           {selectedProductTypeTitle === "Pot/Planter" && <AddPotPlanter />}
         </>
       )}

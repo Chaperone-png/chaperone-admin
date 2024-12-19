@@ -19,6 +19,7 @@ const Products: React.FC = () => {
   const [openDealModal, setOpenDealModal] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [activeTab, setActiveTab] = useState("1"); // Initialize active
   const [plants, setPlants] = useState<any[]>([]);
   const [isFetching, setIsFetching] = useState(false);
   const [filteredPlants, setFilteredPlants] = useState<any[]>([]);
@@ -71,8 +72,18 @@ const Products: React.FC = () => {
   );
 
   useEffect(() => {
-    fetchNurseriesPlants(1, 10, searchString, "active", sortBy);
+    if (activeTab == "1") {
+      fetchNurseriesPlants(1, 10, searchString, "active", sortBy);
+    }
   }, [reload, searchString, sortBy]);
+
+  useEffect(() => {
+    setSearchString("");
+  }, [activeTab]);
+
+  const handleTabChange = (key: string) => {
+    setActiveTab(key); // Update active tab state
+  };
 
   const handleAddProduct = () => {
     dispatch(resetCreateNurseryData());
@@ -115,7 +126,7 @@ const Products: React.FC = () => {
       {/* add the search filter here */}
       <div className="search-container">
         <Input.Search
-          placeholder="Search maalis by name, location, email, contact, etc."
+          placeholder="Search plants and pot by name , type."
           allowClear
           className="search-bar"
           onChange={(e) => handleSearch(e.target.value)}
@@ -134,7 +145,7 @@ const Products: React.FC = () => {
           Add Product
         </Button>
       </div>
-      <Tabs defaultActiveKey="1">
+      <Tabs activeKey={activeTab} onChange={handleTabChange}>
         <TabPane tab="Nursery Plants" key="1">
           <PlantsTable
             plants={plants}
@@ -150,7 +161,7 @@ const Products: React.FC = () => {
           />
         </TabPane>
         <TabPane tab="Pots/Planters" key="2">
-          <PotPlantersTable />
+          <PotPlantersTable activeTab={activeTab} searchString={searchString} />
         </TabPane>
         {/* <TabPane tab="Nursery Tools" key="2">
           <PlantsTable />

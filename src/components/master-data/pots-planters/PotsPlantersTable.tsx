@@ -12,7 +12,14 @@ import PlantFilters from '../plants/PlantFilters';
 import { potPlanterApi } from '../../../services/apis/potPlanterApi';
 import { useLoader } from '../../../context/LoaderContext';
 
-const PotPlantersTable: React.FC = () => {
+interface Props {
+    activeTab: string;
+    searchString: string;
+}
+const PotPlantersTable: React.FC<Props> = ({
+    activeTab,
+    searchString
+}) => {
     const dispatch = useDispatch();
     const [plants, setPlants] = useState<any[]>([]);
     const [isFetching, setIsFetching] = useState(false);
@@ -28,9 +35,9 @@ const PotPlantersTable: React.FC = () => {
     const navigate = useNavigate();
     const { startLoader, stopLoader } = useLoader();
 
-    const fetchNurseriesPlants = useCallback((page: number, pageSize: number) => {
+    const fetchNurseriesPlants = useCallback((page: number, pageSize: number, searchString: string) => {
         setIsFetching(true);
-        potPlanterApi.getNurseriesPotsPlanters(page, pageSize)
+        potPlanterApi.getNurseriesPotsPlanters(page, pageSize, searchString)
             .then(response => {
                 if (response?.data) {
                     setPlants(response.data?.potPlanters);
@@ -46,16 +53,19 @@ const PotPlantersTable: React.FC = () => {
     }, []);
 
     useEffect(() => {
-        fetchNurseriesPlants(currentPage, pageSize);
-    }, [fetchNurseriesPlants, pageSize]);
+        if(activeTab == "2"){
+            fetchNurseriesPlants(currentPage, pageSize, searchString);
+        }
+    }, [fetchNurseriesPlants, pageSize, activeTab, searchString]);
 
     const handlePageChange = (page: number, pageSize?: number) => {
         setCurrentPage(page);
-        fetchNurseriesPlants(page, pageSize || 10);
+        fetchNurseriesPlants(page, pageSize || 10, searchString);
     };
 
     const handlePlantEdit = (record: any) => {
         dispatch(setCurrentStep(0));
+        sessionStorage.setItem("Updation_type", "Pot");
         navigate(`/products/add-product?plantId=${record._id}`);
     };
 
@@ -75,7 +85,7 @@ const PotPlantersTable: React.FC = () => {
                     selectedRecord._id
                 );
                 setStatusModal(false);
-                fetchNurseriesPlants(currentPage, pageSize);
+                fetchNurseriesPlants(currentPage, pageSize, searchString);
             } catch (error) {
                 console.error('Error updating status:', error);
             } finally {

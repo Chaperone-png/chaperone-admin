@@ -70,6 +70,7 @@ const PlantsTable: React.FC<PlantProps> = ({
 
   const handlePlantEdit = (record: any) => {
     dispatch(setCurrentStep(0));
+    sessionStorage.setItem("Updation_type", "Plant");
     navigate(`/products/add-product?plantId=${record._id}`);
   };
 
