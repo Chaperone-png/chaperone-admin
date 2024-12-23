@@ -73,15 +73,15 @@ export const AddProductForm: React.FC<{
     async (plantId: string) => {
       try {
         const currentUpdationType =
-          (sessionStorage.getItem("Updation_type") as ProductCategory | "") ||
-          "";
-        sessionStorage.removeItem("Updation_type");
+          (sessionStorage.getItem("Updation_type") as ProductCategory) ;
+        const item_id = sessionStorage.getItem("item_id") || '';
+        
         setSelectedProductTypeTitle(currentUpdationType);
 
-        console.log({ selectedProductTypeTitle, plantId, currentUpdationType });
+        console.log({ selectedProductTypeTitle, item_id, currentUpdationType });
 
-        if (currentUpdationType === "Plant") {
-          const response = await nurseryPlantApi.getPlantById(plantId);
+        if (selectedProductTypeTitle === "Plant") {
+          const response = await nurseryPlantApi.getPlantById(item_id);
           const plantDetails = response.data;
           if (plantDetails) {
             dispatch(setNurseryId(plantDetails.nursery._id));
@@ -94,12 +94,11 @@ export const AddProductForm: React.FC<{
             resetPlantData();
             navigate("/products/add-product");
           }
-        } else if (currentUpdationType === "Pot/Planter") {
-          const response = await potPlanterApi.getPotPlanterById(plantId);
-          const plantDetails = response.data;
-          console.log(plantDetails, "plant detail");
+        } else if (selectedProductTypeTitle === "Pot/Planter") {
+          const response = await potPlanterApi.getPotPlanterById(item_id);
+          const plantDetails = response.data?.potPlanter;
           if (plantDetails) {
-            dispatch(setNurseryId(plantDetails.nursery._id));
+            dispatch(setNurseryId(plantDetails?.nursery?._id));
             dispatch(setCreatedPlantData(plantDetails));
           } else {
             message.error(
@@ -120,18 +119,18 @@ export const AddProductForm: React.FC<{
     fetchInitialData();
   }, [fetchInitialData]);
 
-  // useEffect(() => {
-  //   //this will handle the current type according to the step 1
-  //   //response data
-  //   if (
-  //     createdPlantData?.hasOwnProperty("potPlanterType") &&
-  //     createdPlantData?.hasOwnProperty("potPlanterShape")
-  //   ) {
-  //     setSelectedProductTypeTitle("Pot/Planter");
-  //   } else if (createdPlantData) {
-  //     setSelectedProductTypeTitle("Plant");
-  //   }
-  // }, [createdPlantData]);
+  useEffect(() => {
+    //this will handle the current type according to the step 1
+    //response data
+    if (
+      createdPlantData?.hasOwnProperty("potPlanterType") &&
+      createdPlantData?.hasOwnProperty("potPlanterShape")
+    ) {
+      setSelectedProductTypeTitle("Pot/Planter");
+    } else if (createdPlantData) {
+      setSelectedProductTypeTitle("Plant");
+    }
+  }, [createdPlantData]);
 
   useEffect(() => {
     const plantId = searchParams.get("plantId") || "";
@@ -156,8 +155,6 @@ export const AddProductForm: React.FC<{
   const handleNurseryChange = (value: string) => {
     dispatch(setNurseryId(value));
   };
-
-  console.log({ selectedProductTypeTitle });
 
   return (
     <>
