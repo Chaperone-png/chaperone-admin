@@ -32,6 +32,7 @@ interface Props {
   selectedDateRange: [string, string] | null;
 }
 
+
 const DashboardWidgets: React.FC<Props> = ({ selectedDateRange }) => {
   const [ordersCount, setOrdersCount] = useState({
     Pending: 0,
